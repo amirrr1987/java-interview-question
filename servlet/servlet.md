@@ -191,9 +191,17 @@ in the chain or to the servlet if it's the last filter in the chain.
 11) What is difference between ServletConfig and ServletContext?
 </summary>
 
-```text
+<div dir="rtl">
 
-```
+ServletConfig:<br>
+Holds configuration information specific to a particular servlet. 
+Each servlet has its own ServletConfig object. Used for servlet-specific initialization parameters.
+
+ServletContext:<br>
+Provides global information about the web application and is accessible to all components
+ (servlets, filters, listeners). Used for sharing data and resources across multiple servlets.
+</div>
+
 </details>
 <details>
 <summary>
