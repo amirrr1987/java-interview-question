@@ -10,16 +10,12 @@
 </summary>
 
 ```text
-In a typical Java servlet container, such as Apache Tomcat,a servlet instance is not created for every request.
-Instead, servlet containers typically use a pool of servlet instances to handle multiple requests concurrently. 
-When a servlet container receives a request, it checks whether there is an available servlet instance in the pool.
-If an instance is available, it is used to process the request. After processing, the servlet instance is returned
-to the pool for reuse. The number of servlet instances in the pool can be configured in the servlet container settings.
-The servlet container manages the lifecycle of servlet instances and ensures that there are enough instances to handle
-incoming requests efficiently. Therefore, the number of instances created and used depends on the servlet container's
-configuration and the incoming request load. In your example, if there are 1000 requests to a servlet, 
-it does not necessarily mean 1000 instances of the servlet are created. The servlet container manages the instances
-efficiently, reusing them from the pool as needed to handle the incoming requests.
+توی یک java servlet container مثل apache tomcat به ازای هر request یه servlet instance ساخته نمیشه، در عوض توی servlet container 
+معمولا یه pool از servlet instance وجود داره که چندین ریکوئست رو به صورت همزمان handle میکنه
+وقتی که servlet container یه ریکئستی دریافت میکنه ابتدا چک میکنه که آیا servlet instance توی pool مجود هست یا نه، اگر instanceای وجود داشته باشه ، برای پردازش این request استفاده میشه وب عد از پردازش servlet instance به pool برگردونده میشه تا دوباره مورد استفاده قرار بگیره.
+در نتیجه توی یه servlet container تعدای servlet instance  وجود داره که همیشه برای پردازش ریکوئست ها آماده هستند، در مثال سوال اگر 1000 ریکوئست وجود داشته باشه
+این به معنی این نیست که 1000 instance برای پردازش این ریکوئست ها وجود داره ، servlet container مدیریت ریکوئست ها ر وبه عهده داره و به servlet instnce ]ای موجود در pool به صورت مدیریت شده 
+درخواست ها رو برای پردازش میفرسته.
 ```
 </details>
 <details open>
@@ -32,25 +28,24 @@ The life cycle of a servlet in Java consists of several stages, from its initial
 Here's an overview of the servlet life cycle stages:
 
 1. Loading:
-When a servlet container (such as Tomcat) starts or when a new web application is deployed, the servlet container loads
-the servlet class. The `init()` method of the servlet is called to initialize the servlet.
+وقتی که یه servlet containar ( مثل apache tomcat) start میشه یا یه web application جدید deploy میشه ، servlet container ، servlet class رو load میکنه
 
 2. Initialization (`init()` method):
-The `init()` method is called by the servlet container after loading the servlet class.It is used for one-time initialization tasks,
-such as loading configuration parameters or establishing database connections.
-The `init()` method is called only once during the servlet's life cycle.
+ متد init بعد از لود شدن servlet class توسط servlet container صدا زده میشه، این متد یکبار برای Initialize کردن تسک ها صدا زده میشه مثل config کردن پارامترها یا etablish کردن کانکشن دیتابیس
+ متد Init فقط یکبار طی life cycle سرولت صدا زده میشه
 
 3. Request Handling (`service()` method):
-For each incoming client request, the servlet container invokes the `service()`method.
-The `service()` method receives the request and response objects and processes the request.
-Depending on the type of request (GET, POST, etc.), the `service()` method dispatches the request to the appropriate `doXXX()`
-method (e.g., `doGet()`, `doPost()`) for handling.
+به ازای هر request  ورودی از سمت کلاینت، servlet container متد service رو فراخونی میکنه.
+متد service آبجکت های ریکوئست و ریسپانس رو دریافت و ریکوئست موردنظر رو پردازش میکنه
+بسته به نوع ریکوئست(get , post , ...) متد service ریکوئست برای handle کردن ریکوئست اون رو به dispatch و به متد مورد نظر تحویل میده مثل doGet, doPost , ..
 
 4. Request-Specific Handling (`doXXX()` methods):
-Servlets can override specific `doXXX()` methods (e.g., `doGet()`, `doPost()`) to handle specific types of HTTP requests.
-These methods are invoked by the `service()` method based on the type of request.
+سرولت ها برای handle کردن انواع مختلف از http request ها میتون متدهای خاص هر نوع رو override کنند ( doGet, doPost , ..)
+این متدها بوسیله متد service بر اساس نوع ریکوئست فراخونی میشن.
 
 5. Destroying (`destroy()` method):
+زمانیکه یه سرولت کانتینر shutdown میشه یا یه web application حذف میشه، متد destroy مربوط به سرولت صدا زده میشه
+
 When a servlet container is shutting down or when a web application is removed, the `destroy()` method of the servlet is called.
 This method allows the servlet to release any resources it has acquired during its life cycle,
 such as closing database connections or releasing file handles. The `destroy()` method is called only once during the servlet's life cycle.
