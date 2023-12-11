@@ -182,9 +182,14 @@ in the chain or to the servlet if it's the last filter in the chain.
 10) What is different between web server and application server?
 </summary>
 
-```text
-
-```
+<div dir="rtl">
+web server:<br>
+یه برنامه کامپیوتری در سرور هست که وظیفه ی بررسی درخواست های کلاینت در سرور رو داره ( با استفاده از پروتکل های http, https)
+و مسئول پردازش و نمایش محتوای درخواستی کارب توی رکوئست هست و هم چنین ذخیره سازی محتوا و اطلاعات مربوط به کلاینت<br>
+web container:<br>
+وب کانتینر یا سرولت کانتینر یه وب سرور هستش که مسئول serve  کردن محتوای داینامیک بر پایه ی jsp یا servlet ها هست.
+وب کانتینر مسئول مدیریت life cycle های سرولت و همچنین map کردن یه url به یه سرولت خاص و هم چنین اطمینان لز دسترسی کاربر به url
+</div>
 </details>
 <details>
 <summary>
