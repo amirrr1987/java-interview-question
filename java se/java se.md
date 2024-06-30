@@ -1,6 +1,6 @@
 ## String
 
-<details open>
+<details>
 
 <summary dir="rtl"> 
 1) oop؟
@@ -125,7 +125,7 @@
 
 
 
-<details open>
+<details>
 
 <summary dir="rtl"> 
 2) تفاوت abstarct با interface ؟
@@ -317,7 +317,7 @@ public class Main {
 </details>
 
 
-<details open>
+<details>
 
 <summary dir="rtl"> 
 3) Default method در interface در حالت multiple اگر متد یکسان باشه چه خطایی میده؟
@@ -430,7 +430,7 @@ class MyClass implements InterfaceA, InterfaceB {
 </details>
 
 
-<details open>
+<details>
 
 <summary dir="rtl"> 
 4)	فرق immutabl با final چیه؟
@@ -592,6 +592,232 @@ class Test {
 1. کلاس `ImmutableBook` به دلیل `final` بودن نمی‌تواند به ارث برده شود.
 2. وضعیت شیء `book` نمی‌تواند تغییر کند زیرا `ImmutableBook` یک کلاس Immutable است.
 3. متغیر `book` نمی‌تواند به شیء دیگری تخصیص داده شود زیرا به صورت `final` تعریف شده است.
+
+</div>
+
+</details>
+
+
+<details >
+
+<summary dir="rtl"> 
+5) 	تفاوت overload با override
+</summary>
+
+<div dir="rtl">
+
+در جاوا، `Overloading` و `Overriding` دو مفهوم متفاوت هستند که برای دستیابی به چندریختی (Polymorphism) استفاده می‌شوند. هر دو این مفاهیم به متدها مربوط می‌شوند، اما در شرایط و اهداف مختلف به کار می‌روند.
+
+### Overloading (بارگذاری مجدد متدها)
+
+**تعریف:**
+- Overloading زمانی اتفاق می‌افتد که چندین متد با همان نام، اما با امضاهای مختلف (مجموعه پارامترهای مختلف) در یک کلاس تعریف شوند. امضای متد شامل تعداد، نوع، و ترتیب پارامترها است.
+
+**ویژگی‌ها:**
+- Overloading در همان کلاس انجام می‌شود.
+- امضای متدها (تعداد یا نوع پارامترها) باید متفاوت باشد.
+- نوع بازگشتی متد می‌تواند متفاوت باشد، اما این تفاوت به تنهایی برای Overloading کافی نیست.
+- Overloading زمان کامپایل (Compile-time) تعیین می‌شود.
+
+**مثال:**
+
+</div>
+
+```java
+class MathUtils {
+    // متد اول
+    public int add(int a, int b) {
+        return a + b;
+    }
+
+    // متد دوم
+    public double add(double a, double b) {
+        return a + b;
+    }
+
+    // متد سوم
+    public int add(int a, int b, int c) {
+        return a + b + c;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        MathUtils utils = new MathUtils();
+        System.out.println(utils.add(2, 3));          // 5
+        System.out.println(utils.add(2.5, 3.5));      // 6.0
+        System.out.println(utils.add(1, 2, 3));       // 6
+    }
+}
+```
+
+<div dir="rtl">
+
+### Overriding (بازنویسی متدها)
+
+**تعریف:**
+- Overriding زمانی اتفاق می‌افتد که یک کلاس فرزند متدی را از کلاس والد بازنویسی کند. متد بازنویسی‌شده در کلاس فرزند باید همان امضای متد در کلاس والد را داشته باشد.
+
+**ویژگی‌ها:**
+- Overriding بین کلاس والد و کلاس فرزند انجام می‌شود.
+- امضای متد (نام، تعداد، نوع، و ترتیب پارامترها) باید دقیقاً یکسان باشد.
+- نوع بازگشتی متد در کلاس فرزند باید با نوع بازگشتی متد در کلاس والد سازگار باشد.
+- متد در کلاس فرزند باید همان سطح دسترسی یا سطح دسترسی بیشتری نسبت به کلاس والد داشته باشد.
+- Overriding زمان اجرا (Run-time) تعیین می‌شود.
+
+**مثال:**
+
+</div>
+
+```java
+class Animal {
+    public void makeSound() {
+        System.out.println("Animal makes a sound");
+    }
+}
+
+class Dog extends Animal {
+    @Override
+    public void makeSound() {
+        System.out.println("Woof");
+    }
+}
+
+class Cat extends Animal {
+    @Override
+    public void makeSound() {
+        System.out.println("Meow");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Animal myDog = new Dog();
+        Animal myCat = new Cat();
+        
+        myDog.makeSound(); // Woof
+        myCat.makeSound(); // Meow
+    }
+}
+```
+
+<div dir="rtl">
+
+### تفاوت‌های کلیدی بین Overloading و Overriding
+
+1. **مفهوم:**
+   - **Overloading:** تعریف چندین متد با همان نام در یک کلاس، اما با امضاهای مختلف.
+   - **Overriding:** بازنویسی متدی از کلاس والد در کلاس فرزند با همان امضا.
+
+2. **زمان تعیین:**
+   - **Overloading:** زمان کامپایل.
+   - **Overriding:** زمان اجرا.
+
+3. **محدوده کاربرد:**
+   - **Overloading:** در همان کلاس.
+   - **Overriding:** بین کلاس والد و کلاس فرزند.
+
+4. **نوع بازگشتی:**
+   - **Overloading:** می‌تواند متفاوت باشد.
+   - **Overriding:** باید همان نوع یا نوع سازگار باشد.
+
+5. **پارامترها:**
+   - **Overloading:** تعداد، نوع، یا ترتیب پارامترها باید متفاوت باشد.
+   - **Overriding:** تعداد، نوع، و ترتیب پارامترها باید یکسان باشد.
+
+### نتیجه‌گیری
+
+- Overloading برای دستیابی به چندریختی در سطح کلاس با تعریف متدهای هم‌نام اما با امضاهای مختلف استفاده می‌شود.
+- Overriding برای بازنویسی متدهای کلاس والد در کلاس فرزند به منظور ارائه پیاده‌سازی‌های خاص هر کلاس فرزند استفاده می‌شود.
+
+</div>
+
+</details>
+
+<details >
+
+<summary dir="rtl"> 
+5) 		جاوا pass by value یا pass by refrence
+</summary>
+
+<div dir="rtl">
+
+در جاوا، **تمام آرگومان‌ها به صورت "pass by value"** (ارسال به‌وسیله مقدار) به متدها ارسال می‌شوند. این جمله ممکن است باعث ایجاد سردرگمی شود، زیرا نحوه کار جاوا با انواع ابتدایی (primitive types) و اشیاء (objects) تفاوت دارد.
+
+### انواع ابتدایی (Primitive Types)
+
+وقتی یک مقدار ابتدایی (مثل `int`, `char`, `boolean`, `float` و ...) به یک متد ارسال می‌شود، یک کپی از آن مقدار ایجاد می‌شود و به متد ارسال می‌گردد. بنابراین، هر گونه تغییری که در متد روی این پارامتر اعمال شود، تأثیری روی مقدار اصلی ندارد.
+
+**مثال:**
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        int num = 10;
+        modifyPrimitive(num);
+        System.out.println("After modifyPrimitive: " + num); // هنوز 10
+    }
+
+    public static void modifyPrimitive(int value) {
+        value = 20; // فقط مقدار کپی شده تغییر می‌کند
+    }
+}
+```
+
+### اشیاء (Objects)
+
+در مورد اشیاء، همان قانون "pass by value" اعمال می‌شود، اما اینجا تفاوت اصلی به دلیل نحوه مدیریت مرجع‌ها (references) به وجود می‌آید. وقتی یک شیء به یک متد ارسال می‌شود، یک کپی از مرجع (reference) آن شیء ارسال می‌شود، نه خود شیء. به عبارت دیگر، مرجع به شیء کپی می‌شود، اما هر دو مرجع به همان شیء در حافظه اشاره می‌کنند.
+
+بنابراین، اگر شما متغیرهای داخلی شیء را تغییر دهید، این تغییرات روی شیء اصلی اعمال می‌شود، اما اگر مرجع را تغییر دهید (مثلاً به یک شیء جدید اشاره کنید)، این تغییر فقط در محدوده همان متد است و تأثیری بر مرجع اصلی خارج از متد ندارد.
+
+**مثال:**
+
+```java
+class MyObject {
+    int value;
+}
+
+public class Main {
+    public static void main(String[] args) {
+        MyObject obj = new MyObject();
+        obj.value = 10;
+        modifyObject(obj);
+        System.out.println("After modifyObject: " + obj.value); // خروجی 20 است
+    }
+
+    public static void modifyObject(MyObject obj) {
+        obj.value = 20; // تغییر در شیء اصلی اعمال می‌شود
+    }
+}
+```
+
+**مثال دیگر:**
+
+```java
+class MyObject {
+    int value;
+}
+
+public class Main {
+    public static void main(String[] args) {
+        MyObject obj = new MyObject();
+        obj.value = 10;
+        reassignObject(obj);
+        System.out.println("After reassignObject: " + obj.value); // هنوز 10 است
+    }
+
+    public static void reassignObject(MyObject obj) {
+        obj = new MyObject();
+        obj.value = 20; // مرجع جدید فقط در محدوده متد معتبر است
+    }
+}
+```
+
+### نتیجه‌گیری
+
+جاوا همیشه از "pass by value" استفاده می‌کند:
+- **برای انواع ابتدایی:** مقدار خود نوع ابتدایی کپی و ارسال می‌شود.
+- **برای اشیاء:** یک کپی از مرجع (reference) شیء ارسال می‌شود، نه خود شیء. این به این معناست که شما می‌توانید وضعیت داخلی شیء را تغییر دهید، اما نمی‌توانید مرجع اصلی را در خارج از متد تغییر دهید.
 
 </div>
 
