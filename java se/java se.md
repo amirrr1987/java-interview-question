@@ -953,10 +953,291 @@ class Outer {
 </summary>
 
 <div dir="rtl">
+
+در جاوا، برای ایجاد یک متغیر (شیء) به‌صورت `immutable`، باید چندین اصل و روش را رعایت کنید. در ادامه، نحوه ایجاد یک کلاس `immutable` و متغیرهای آن را توضیح می‌دهم.
+
+### مراحل ایجاد یک کلاس `immutable`
+
+1. **کلاس را `final` کنید تا از ارث‌بری جلوگیری شود.**
+2. **تمام فیلدهای کلاس را `private` و `final` کنید تا فقط یک بار مقداردهی شوند.**
+3. **هیچ `setter`ای برای فیلدها فراهم نکنید.**
+4. **تمام فیلدها را از طریق سازنده مقداردهی کنید.**
+5. **اگر فیلدها از نوع mutable (قابل تغییر) هستند، یک کپی عمیق از آن‌ها در سازنده و getterها ایجاد کنید.**
+
+### مثال
+
+یک کلاس `Person` را به‌صورت `immutable` ایجاد می‌کنیم:
+
+```java
+public final class Person {
+    private final String name;
+    private final int age;
+    private final List<String> hobbies;
+
+    public Person(String name, int age, List<String> hobbies) {
+        this.name = name;
+        this.age = age;
+        // کپی عمیق برای فیلد mutable
+        this.hobbies = new ArrayList<>(hobbies);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    // بازگرداندن کپی برای فیلد mutable
+    public List<String> getHobbies() {
+        return new ArrayList<>(hobbies);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        List<String> hobbies = new ArrayList<>();
+        hobbies.add("Reading");
+        hobbies.add("Traveling");
+
+        Person person = new Person("John", 30, hobbies);
+
+        // تلاش برای تغییر لیست hobbies خارجی
+        hobbies.add("Swimming");
+
+        System.out.println(person.getHobbies()); // خروجی: [Reading, Traveling]
+
+        // تلاش برای تغییر لیست hobbies از طریق getter
+        person.getHobbies().add("Swimming");
+
+        System.out.println(person.getHobbies()); // خروجی: [Reading, Traveling]
+    }
+}
+```
+
+### توضیحات
+
+1. **کلاس `Person` به‌صورت `final` تعریف شده است:**
+   - این کار باعث می‌شود تا هیچ کلاسی نتواند از آن ارث‌بری کند و متدهای آن را تغییر دهد.
+
+2. **فیلدهای `name`, `age`, و `hobbies` به‌صورت `private` و `final` تعریف شده‌اند:**
+   - این کار اطمینان می‌دهد که این فیلدها فقط یک بار مقداردهی می‌شوند و نمی‌توانند تغییر کنند.
+
+3. **هیچ `setter`ای برای فیلدها وجود ندارد:**
+   - این کار از تغییر مقادیر فیلدها بعد از مقداردهی اولیه جلوگیری می‌کند.
+
+4. **فیلدهای mutable (قابل تغییر) مانند `List<String>` به‌صورت کپی عمیق مقداردهی می‌شوند:**
+   - در سازنده، یک کپی جدید از لیست ورودی ایجاد می‌شود.
+   - در getter، یک کپی جدید از لیست بازگردانده می‌شود تا از تغییر لیست اصلی جلوگیری شود.
+
+### نتیجه‌گیری
+
+با رعایت این اصول، می‌توانید یک کلاس `immutable` ایجاد کنید که متغیرهای آن پس از مقداردهی اولیه دیگر تغییر نخواهند کرد. این ویژگی باعث می‌شود تا کلاس‌های `immutable` برای استفاده در برنامه‌های چندنخی (multi-threaded) بسیار مناسب باشند، زیرا نیازی به هماهنگ‌سازی (synchronization) برای دسترسی به متغیرها ندارند.
+
 </div>
 
 </details>
 
+
+
+<details>
+<summary dir="rtl"> 
+8) فرق reflection با aspect ؟
+</summary>
+
+<div dir="rtl">
+
+Reflection و Aspect-Oriented Programming (AOP) دو مفهوم مجزا در جاوا هستند که هر کدام برای اهداف خاصی استفاده می‌شوند. در ادامه تفاوت‌های اصلی بین Reflection و AOP را بررسی می‌کنیم:
+
+### Reflection
+
+**تعریف:**
+Reflection یک ویژگی قدرتمند در جاوا است که به برنامه‌نویسان اجازه می‌دهد تا اطلاعات مربوط به ساختار برنامه (مانند کلاس‌ها، متدها، فیلدها و سازنده‌ها) را در زمان اجرا به دست آورند و از آن‌ها برای انجام عملیات مختلف استفاده کنند.
+
+**کاربردها:**
+1. **دسترسی به اطلاعات کلاس در زمان اجرا:** مانند نام کلاس، متدها، فیلدها و سازنده‌ها.
+2. **ایجاد اشیاء در زمان اجرا:** بدون استفاده از سازنده‌های معمولی.
+3. **فراخوانی متدها در زمان اجرا:** بدون استفاده از نام متدها در کد.
+4. **دسترسی و تغییر فیلدها در زمان اجرا:** حتی اگر این فیلدها خصوصی باشند.
+
+**مثال:**
+```java
+import java.lang.reflect.*;
+
+public class ReflectionExample {
+    private String message = "Hello, Reflection!";
+
+    public static void main(String[] args) {
+        try {
+            ReflectionExample obj = new ReflectionExample();
+
+            // دسترسی به فیلد خصوصی
+            Field field = ReflectionExample.class.getDeclaredField("message");
+            field.setAccessible(true);
+            String value = (String) field.get(obj);
+
+            System.out.println("Field Value: " + value); // خروجی: Hello, Reflection!
+
+            // تغییر فیلد خصوصی
+            field.set(obj, "Hello, Modified Reflection!");
+            System.out.println("Modified Field Value: " + obj.message); // خروجی: Hello, Modified Reflection!
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+### Aspect-Oriented Programming (AOP)
+
+**تعریف:**
+AOP یک پارادایم برنامه‌نویسی است که هدف آن جداسازی مقاطع مختلف برنامه (Concerns) است تا کدهای مربوط به مقاطع مختلف بتوانند به طور مستقل از هم توسعه و مدیریت شوند. در جاوا، AOP معمولاً با استفاده از فریم‌ورک‌هایی مانند Spring AOP و AspectJ پیاده‌سازی می‌شود.
+
+**کاربردها:**
+1. **جداسازی مقاطع مختلف برنامه:** مانند مدیریت لاگ‌ها، امنیت، تراکنش‌ها و مدیریت استثناها.
+2. **افزایش خوانایی و نگهداری کد:** با جداسازی مقاطع مختلف برنامه از منطق اصلی.
+3. **اضافه کردن رفتار به متدها و اشیاء:** بدون تغییر در کد منبع آن‌ها.
+
+**اصطلاحات کلیدی در AOP:**
+1. **Aspect:** یک مقطع برنامه که می‌تواند به ماژول‌های مختلف اضافه شود.
+2. **Join Point:** یک نقطه در اجرای برنامه که در آن می‌توان یک مقطع را اعمال کرد.
+3. **Advice:** کدی که در یک Join Point مشخص اجرا می‌شود.
+4. **Pointcut:** مجموعه‌ای از Join Pointها که در آن‌ها یک Advice اعمال می‌شود.
+5. **Weaving:** فرآیند اعمال Aspects به کد اصلی.
+
+**مثال:**
+استفاده از Spring AOP برای لاگ‌گیری از متدها:
+```java
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+import org.springframework.stereotype.Component;
+
+@Aspect
+@Component
+public class LoggingAspect {
+    @Before("execution(* com.example.service.*.*(..))")
+    public void logBeforeMethod() {
+        System.out.println("Method is about to be executed");
+    }
+}
+```
+
+### تفاوت‌های کلیدی
+
+1. **هدف:**
+   - **Reflection:** برای دسترسی و تغییر ساختار برنامه در زمان اجرا استفاده می‌شود.
+   - **AOP:** برای جداسازی مقاطع مختلف برنامه و افزودن رفتار به متدها بدون تغییر کد منبع استفاده می‌شود.
+
+2. **کاربرد:**
+   - **Reflection:** بیشتر برای عملیات پویا مانند ایجاد اشیاء، فراخوانی متدها و دسترسی به فیلدها در زمان اجرا استفاده می‌شود.
+   - **AOP:** بیشتر برای افزودن مقاطع عمومی مانند لاگ‌گیری، امنیت و مدیریت تراکنش‌ها به برنامه بدون تغییر کد منبع استفاده می‌شود.
+
+3. **پیاده‌سازی:**
+   - **Reflection:** به صورت ذاتی در جاوا موجود است و از طریق بسته `java.lang.reflect` قابل دسترسی است.
+   - **AOP:** نیاز به فریم‌ورک‌های خاص مانند Spring AOP یا AspectJ دارد.
+
+4. **پیچیدگی و نگهداری:**
+   - **Reflection:** ممکن است کد پیچیده‌تر و دیباگ سخت‌تری داشته باشد.
+   - **AOP:** به طور کلی خوانایی و نگهداری کد را بهبود می‌بخشد زیرا مقاطع مختلف برنامه از منطق اصلی جدا می‌شوند.
+
+### نتیجه‌گیری
+
+Reflection و AOP هر دو ابزارهای قدرتمندی در جاوا هستند که برای اهداف مختلفی استفاده می‌شوند. Reflection برای دسترسی و تغییر ساختار برنامه در زمان اجرا مناسب است، در حالی که AOP برای جداسازی مقاطع مختلف برنامه و افزودن رفتارهای عمومی به متدها بدون تغییر کد منبع استفاده می‌شود. با درک تفاوت‌های بین این دو، می‌توانید از هر یک به صورت مناسب در برنامه‌های خود استفاده کنید.
+
+</div>
+
+</details>
+
+
+<details>
+<summary dir="rtl"> 
+9) تفاوت heap و stack  با مثال ؟
+</summary>
+
+<div dir="rtl">
+
+در جاوا، حافظه به دو بخش اصلی تقسیم می‌شود: Heap و Stack. هر یک از این بخش‌ها وظایف و کاربردهای خاص خود را دارند. در ادامه تفاوت‌های کلیدی بین Heap و Stack به همراه مثال‌هایی توضیح داده شده است.
+
+### تفاوت‌های کلیدی بین Heap و Stack
+
+1. **مدیریت حافظه:**
+   - **Stack:** برای ذخیره‌سازی متغیرهای محلی و فراخوانی‌های متد استفاده می‌شود. این حافظه به صورت خودکار توسط JVM مدیریت می‌شود و با خروج از بلاک متد، حافظه آزاد می‌شود.
+   - **Heap:** برای ذخیره‌سازی اشیاء و متغیرهای سراسری استفاده می‌شود. مدیریت این حافظه توسط Garbage Collector انجام می‌شود.
+
+2. **سرعت دسترسی:**
+   - **Stack:** دسترسی به حافظه در Stack سریع‌تر است زیرا به صورت LIFO (Last In First Out) مدیریت می‌شود.
+   - **Heap:** دسترسی به حافظه در Heap کندتر است زیرا مدیریت پیچیده‌تری دارد و Garbage Collector باید آن را مدیریت کند.
+
+3. **ساختار داده:**
+   - **Stack:** به صورت ساختار داده پشته (Stack) مدیریت می‌شود.
+   - **Heap:** به صورت ساختار داده هرم (Heap) مدیریت می‌شود و اشیاء به صورت نامرتب ذخیره می‌شوند.
+
+4. **اندازه:**
+   - **Stack:** حافظه Stack معمولاً کوچک‌تر است و محدودیت اندازه دارد.
+   - **Heap:** حافظه Heap بزرگ‌تر است و می‌تواند مقدار بیشتری داده ذخیره کند.
+
+5. **مدت زمان زندگی داده‌ها:**
+   - **Stack:** مدت زمان زندگی داده‌ها کوتاه است و فقط تا زمان خروج از بلاک یا متد معتبر هستند.
+   - **Heap:** مدت زمان زندگی داده‌ها طولانی‌تر است و تا زمانی که Garbage Collector آن‌ها را جمع‌آوری نکند، معتبر هستند.
+
+### مثال:
+
+برای درک بهتر تفاوت‌ها، بیایید یک مثال عملی را بررسی کنیم:
+
+```java
+public class MemoryExample {
+    public static void main(String[] args) {
+        int x = 5; // متغیر محلی: ذخیره شده در Stack
+        int y = 10; // متغیر محلی: ذخیره شده در Stack
+
+        MyClass obj = new MyClass(); // شیء: ذخیره شده در Heap
+        obj.setValue(20);
+
+        System.out.println("x: " + x); // 5
+        System.out.println("y: " + y); // 10
+        System.out.println("obj.value: " + obj.getValue()); // 20
+    }
+}
+
+class MyClass {
+    private int value; // فیلد نمونه: ذخیره شده در Heap
+
+    public void setValue(int value) {
+        this.value = value;
+    }
+
+    public int getValue() {
+        return value;
+    }
+}
+```
+
+### توضیحات:
+
+1. **متغیرهای محلی (x و y):**
+   - این متغیرها در حافظه Stack ذخیره می‌شوند. هر بار که متد `main` فراخوانی می‌شود، یک بلاک جدید در Stack ایجاد می‌شود و این متغیرها در آن بلاک ذخیره می‌شوند. با خروج از متد `main`، این بلاک و تمام متغیرهای محلی آن آزاد می‌شوند.
+
+2. **شیء `MyClass` (obj):**
+   - این شیء در حافظه Heap ذخیره می‌شود. متغیر `obj` که یک مرجع به این شیء است، در Stack ذخیره می‌شود، اما خود شیء در Heap قرار دارد. Garbage Collector مسئول مدیریت حافظه Heap است و زمانی که هیچ مرجعی به این شیء اشاره نکند، آن را جمع‌آوری می‌کند.
+
+3. **فیلد نمونه `value` در کلاس `MyClass`:**
+   - این فیلد به عنوان بخشی از شیء `MyClass` در Heap ذخیره می‌شود. تغییرات در این فیلد توسط متدهای `setValue` و `getValue` انجام می‌شود.
+
+### نتیجه‌گیری
+
+- **Stack:** برای ذخیره‌سازی متغیرهای محلی و فراخوانی‌های متد استفاده می‌شود. دسترسی سریع‌تر است و حافظه به صورت خودکار با خروج از بلاک آزاد می‌شود.
+- **Heap:** برای ذخیره‌سازی اشیاء و متغیرهای سراسری استفاده می‌شود. دسترسی کندتر است و مدیریت حافظه توسط Garbage Collector انجام می‌شود.
+
+درک تفاوت‌های بین Heap و Stack می‌تواند به بهینه‌سازی عملکرد و مدیریت بهتر حافظه در برنامه‌های جاوا کمک کند.
+
+### نکته
+توی ترد هر کدم stack خودشون رو دارن ولی heap یکیه
+
+</div>
+
+</details>
 
 ## String 
 
@@ -965,7 +1246,7 @@ class Outer {
 
 <details>
 <summary dir="rtl"> 
-8) تفاوت string با string buffer و string builder ؟
+9) تفاوت string با string buffer و string builder ؟
 </summary>
 
 <div dir="rtl">
@@ -1047,7 +1328,7 @@ System.out.println(sb.toString()); // خروجی: Hello World
 
 <details>
 <summary dir="rtl"> 
-9) 	تفاوت new کردن string با literal(مستقیم)  تعریف کردن اون ؟
+10) 	تفاوت new کردن string با literal(مستقیم)  تعریف کردن اون ؟
 </summary>
 
 <div dir="rtl">
@@ -1113,7 +1394,7 @@ System.out.println(str3.equals(str4)); // خروجی: true
 
 <details>
 <summary dir="rtl"> 
-10)	String pool چیه؟	هدف از ساخت string pool چی بوده ؟
+11)	String pool چیه؟	هدف از ساخت string pool چی بوده ؟
 </summary>
 
 <div dir="rtl">
@@ -1189,3 +1470,8 @@ System.out.println(str1 == str6); // خروجی: true
 </div>
 
 </details>
+
+
+## Collection
+
+----------
