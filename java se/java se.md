@@ -1239,6 +1239,142 @@ class MyClass {
 
 </details>
 
+<details>
+<summary dir="rtl"> 
+10) معماری garbage collector ؟
+</summary>
+
+<div dir="rtl">
+
+معماری Garbage Collector (GC) در جاوا برای مدیریت خودکار حافظه طراحی شده است. این معماری به اجزای مختلفی تقسیم می‌شود که هر کدام نقش خاصی در جمع‌آوری و بازپس‌گیری حافظه‌ی اشیائی که دیگر مورد استفاده نیستند، دارند. در ادامه، معماری کلی GC را توضیح می‌دهم و سپس با استفاده از یک نمودار آن را نمایش می‌دهم.
+
+### اجزای کلیدی معماری Garbage Collector
+
+1. **Heap Memory:**
+   - **Young Generation (نسل جوان):**
+      - **Eden Space:** اشیاء جدید ابتدا در اینجا ایجاد می‌شوند.
+      - **Survivor Spaces (S0 و S1):** اشیاء از Eden Space که هنوز زنده هستند به یکی از این دو فضای Survivor منتقل می‌شوند.
+   - **Old Generation (نسل قدیمی):** اشیاءی که مدت طولانی‌تری زنده می‌مانند به اینجا منتقل می‌شوند.
+   - **Permanent Generation (PermGen) / Metaspace:** برای ذخیره‌سازی متادیتاهای کلاس و اطلاعات مربوط به کلاس‌ها استفاده می‌شود (در نسخه‌های جدید جاوا، Metaspace جایگزین PermGen شده است).
+
+2. **Garbage Collection Phases:**
+   - **Minor GC:** جمع‌آوری زباله‌های Young Generation.
+   - **Major GC / Full GC:** جمع‌آوری زباله‌های Old Generation و گاهی اوقات همه نسل‌ها.
+
+### نمودار معماری Garbage Collector
+
+برای نمایش تصویری از معماری GC، به نمودار زیر توجه کنید:
+
+```
++-----------------+
+|     Heap Memory  |
++-----------------+
+|                 |
+| +-------------+ |    +-------------+
+| | Young Gen   | |    | Old Gen     |
+| |             | |    |             |
+| | +---------+ | |    | +---------+ |
+| | | Eden    | |----->| | Object  | |
+| | |         | |    | | |         | |
+| | +---------+ | |    | +---------+ |
+| | +---------+ | |    |             |
+| | | S0      | |----->|             |
+| | +---------+ | |    +-------------+
+| | +---------+ | |
+| | | S1      | | |
+| | +---------+ | |
+| +-------------+ |
+|                 |
++-----------------+
+
+Legend:
+- Young Gen: Generation for new objects
+  - Eden: Space where new objects are initially allocated
+  - S0, S1: Survivor spaces for objects that survive garbage collection in Eden
+- Old Gen: Generation for long-lived objects
+```
+
+### توضیحات نمودار
+
+1. **Heap Memory:**
+   - **Young Generation (نسل جوان):**
+      - **Eden Space:** جایی که اشیاء جدید ابتدا ایجاد می‌شوند.
+      - **Survivor Spaces (S0 و S1):** اشیائی که از Eden Space جان سالم به در می‌برند به یکی از این فضاهای Survivor منتقل می‌شوند. در هر مرحله، یکی از این فضاها به عنوان مقصد و دیگری به عنوان منبع استفاده می‌شود.
+   - **Old Generation (نسل قدیمی):** اشیاءی که برای مدت طولانی‌تری زنده می‌مانند به اینجا منتقل می‌شوند و در اینجا نگهداری می‌شوند.
+
+2. **فرآیندهای Garbage Collection:**
+   - **Minor GC:** این فرآیند برای جمع‌آوری زباله‌های موجود در Young Generation انجام می‌شود. اشیاء زنده از Eden Space به Survivor Space ها منتقل می‌شوند.
+   - **Major GC / Full GC:** این فرآیند برای جمع‌آوری زباله‌های موجود در Old Generation و گاهی اوقات در تمامی نسل‌ها انجام می‌شود. این فرآیند سنگین‌تر است و مدت زمان بیشتری طول می‌کشد.
+
+اشیاءی که استفاده نمی‌شوند و به آنها دسترسی وجود ندارد، در مراحل مختلف جمع‌آوری زباله (Garbage Collection) از بین می‌روند، و این مراحل بستگی به محل قرارگیری این اشیاء در حافظه Heap دارد. به طور کلی، روند کار به این صورت است:
+
+### Young Generation
+
+1. **Eden Space:**
+   - اشیاء جدید ابتدا در اینجا ایجاد می‌شوند.
+   - وقتی فضای Eden پر می‌شود، یک Minor GC (جمع‌آوری زباله‌ی کوچک) انجام می‌شود.
+   - در طی Minor GC، اشیاء زنده از Eden Space به یکی از فضاهای Survivor (S0 یا S1) منتقل می‌شوند.
+   - اشیائی که دسترسی به آنها وجود ندارد و در Eden Space قرار دارند، در این مرحله جمع‌آوری و حذف می‌شوند.
+
+2. **Survivor Spaces (S0 و S1):**
+   - اشیاءی که از مرحله‌ی قبلی جان سالم به در برده‌اند به این فضاها منتقل می‌شوند.
+   - هر بار که یک Minor GC اجرا می‌شود، اشیاء زنده بین دو فضای Survivor جابجا می‌شوند.
+   - اگر یک شیء پس از چندین Minor GC هنوز زنده باشد، به Old Generation منتقل می‌شود.
+   - اشیائی که دسترسی به آنها وجود ندارد و در Survivor Spaces قرار دارند، در طی Minor GC جمع‌آوری و حذف می‌شوند.
+
+### Old Generation
+
+- **Old Generation:**
+   - اشیائی که برای مدت طولانی‌تری زنده می‌مانند و از مراحل چندگانه‌ی Minor GC جان سالم به در برده‌اند، به Old Generation منتقل می‌شوند.
+   - جمع‌آوری زباله در Old Generation به عنوان Major GC یا Full GC شناخته می‌شود.
+   - اشیائی که دسترسی به آنها وجود ندارد و در Old Generation قرار دارند، در طی Major GC یا Full GC جمع‌آوری و حذف می‌شوند.
+
+### نتیجه‌گیری
+
+- اشیائی که دسترسی به آنها وجود ندارد و در Young Generation قرار دارند (Eden Space و Survivor Spaces)، در طی Minor GC جمع‌آوری و حذف می‌شوند.
+- اشیائی که به Old Generation منتقل شده‌اند و دسترسی به آنها وجود ندارد، در طی Major GC یا Full GC جمع‌آوری و حذف می‌شوند.
+
+### نمودار فرآیند Garbage Collection
+
+```
++-----------------+
+|     Heap Memory  |
++-----------------+
+|                 |
+| +-------------+ |    +-------------+
+| | Young Gen   | |    | Old Gen     |
+| |             | |    |             |
+| | +---------+ | |    | +---------+ |
+| | | Eden    | |----->| | Object  | |
+| | |         | |    | | |         | |
+| | +---------+ | |    | +---------+ |
+| | +---------+ | |    |             |
+| | | S0      | |----->|             |
+| | +---------+ | |    +-------------+
+| | +---------+ | |
+| | | S1      | | |
+| | +---------+ | |
+| +-------------+ |
+|                 |
++-----------------+
+
+Legend:
+- Young Gen: Generation for new objects
+  - Eden: Space where new objects are initially allocated
+  - S0, S1: Survivor spaces for objects that survive garbage collection in Eden
+- Old Gen: Generation for long-lived objects
+```
+
+در این نمودار، فرآیندهای جمع‌آوری زباله و نحوه‌ی جابجایی اشیاء بین فضاهای مختلف نمایش داده شده است. اشیاء غیرقابل دسترسی در هر یک از این فضاها در طی جمع‌آوری زباله حذف می‌شوند.
+
+### نتیجه‌گیری کلی
+
+Garbage Collector در جاوا از یک معماری چند نسلی استفاده می‌کند که شامل Young Generation, Old Generation و (در نسخه‌های قدیمی) Permanent Generation می‌شود. این معماری به بهبود کارایی GC و مدیریت بهینه‌تر حافظه کمک می‌کند. استفاده از نمودارها و توضیحات بالا می‌تواند به درک بهتر نحوه کار GC و بهینه‌سازی برنامه‌های جاوا کمک کند.
+
+</div>
+
+</details>
+
 ## String 
 
 ----------
@@ -1246,7 +1382,7 @@ class MyClass {
 
 <details>
 <summary dir="rtl"> 
-9) تفاوت string با string buffer و string builder ؟
+11) تفاوت string با string buffer و string builder ؟
 </summary>
 
 <div dir="rtl">
@@ -1328,7 +1464,7 @@ System.out.println(sb.toString()); // خروجی: Hello World
 
 <details>
 <summary dir="rtl"> 
-10) 	تفاوت new کردن string با literal(مستقیم)  تعریف کردن اون ؟
+12) 	تفاوت new کردن string با literal(مستقیم)  تعریف کردن اون ؟
 </summary>
 
 <div dir="rtl">
@@ -1394,7 +1530,7 @@ System.out.println(str3.equals(str4)); // خروجی: true
 
 <details>
 <summary dir="rtl"> 
-11)	String pool چیه؟	هدف از ساخت string pool چی بوده ؟
+13)	String pool چیه؟	هدف از ساخت string pool چی بوده ؟
 </summary>
 
 <div dir="rtl">
