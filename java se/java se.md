@@ -1,4 +1,6 @@
-## String
+## oop
+
+---------------
 
 <details>
 
@@ -818,6 +820,371 @@ public class Main {
 جاوا همیشه از "pass by value" استفاده می‌کند:
 - **برای انواع ابتدایی:** مقدار خود نوع ابتدایی کپی و ارسال می‌شود.
 - **برای اشیاء:** یک کپی از مرجع (reference) شیء ارسال می‌شود، نه خود شیء. این به این معناست که شما می‌توانید وضعیت داخلی شیء را تغییر دهید، اما نمی‌توانید مرجع اصلی را در خارج از متد تغییر دهید.
+
+</div>
+
+</details>
+
+
+<details>
+
+<summary dir="rtl"> 
+6) تعریف anonymous class و nested class ؟
+</summary>
+
+<div dir="rtl">
+
+### Nested Class (کلاس تو در تو)
+
+وقتی یک کلاس یا یک اینترفیس داخل یک کلاس دیگر تعریف می‌شود، به آن `Nested Class` گفته می‌شود. `Nested Class`ها دو نوع اصلی دارند:
+1. **Static Nested Class**
+2. **Non-static Nested Class (Inner Class)**
+
+### انواع Inner Class
+
+1. **Member Inner Class:**
+   - یک `Inner Class` که درون یک کلاس بیرونی و خارج از متدهای آن تعریف می‌شود.
+   - به اعضای کلاس بیرونی دسترسی مستقیم دارد، حتی اگر اعضا `private` باشند.
+
+   **مثال:**
+   ```java
+   class TestMemberOuter1 {
+       private int data = 30;
+
+       class Inner {
+           void msg() {
+               System.out.println("data is " + data);
+           }
+       }
+
+       public static void main(String args[]) {
+           TestMemberOuter1 obj = new TestMemberOuter1();
+           TestMemberOuter1.Inner in = obj.new Inner();
+           in.msg(); // خروجی: data is 30
+       }
+   }
+   ```
+
+2. **Anonymous Inner Class:**
+   - یک `Inner Class` که بدون نام است و برای پیاده‌سازی یک اینترفیس یا گسترش یک کلاس استفاده می‌شود.
+   - معمولاً برای پیاده‌سازی‌های فوری و کوتاه مدت استفاده می‌شود.
+
+   **مثال:**
+   ```java
+   abstract class Person {
+       abstract void eat();
+   }
+
+   class TestAnonymousInner {
+       public static void main(String args[]) {
+           Person p = new Person() {
+               void eat() {
+                   System.out.println("nice fruits");
+               }
+           };
+           p.eat(); // خروجی: nice fruits
+       }
+   }
+   ```
+
+3. **Local Inner Class:**
+   - یک `Inner Class` که درون یک متد، سازنده یا بلوک تعریف می‌شود.
+   - فقط در داخل متد یا بلوک که در آن تعریف شده است قابل دسترسی است.
+
+   **مثال:**
+   ```java
+   public class localInner1 {
+       private int data = 30; // متغیر نمونه
+
+       void display() {
+           class Local {
+               void msg() {
+                   System.out.println(data);
+               }
+           }
+           Local l = new Local();
+           l.msg(); // خروجی: 30
+       }
+
+       public static void main(String args[]) {
+           localInner1 obj = new localInner1();
+           obj.display();
+       }
+   }
+   ```
+
+### Static Nested Class
+
+- یک `Nested Class` که با استفاده از کلمه کلیدی `static` تعریف شده و می‌تواند بدون نیاز به نمونه‌ای از کلاس بیرونی استفاده شود.
+- به اعضای `static` کلاس بیرونی دسترسی مستقیم دارد، اما به اعضای `instance` دسترسی ندارد مگر اینکه یک نمونه از کلاس بیرونی داشته باشد.
+
+**مثال:**
+```java
+class Outer {
+    static int data = 30;
+
+    static class StaticNested {
+        void display() {
+            System.out.println("data is " + data);
+        }
+    }
+
+    public static void main(String args[]) {
+        Outer.StaticNested nested = new Outer.StaticNested();
+        nested.display(); // خروجی: data is 30
+    }
+}
+```
+
+### نتیجه‌گیری
+
+- `Nested Class`ها در جاوا به دو نوع اصلی تقسیم می‌شوند: `Static Nested Class` و `Inner Class`.
+- `Inner Class`ها خود به سه دسته تقسیم می‌شوند: `Member Inner Class`, `Anonymous Inner Class`, و `Local Inner Class`.
+- هر نوع از `Inner Class` کاربردها و ویژگی‌های خاص خود را دارد که در موقعیت‌های مختلف می‌تواند مفید باشد.
+</div>
+
+</details>
+
+
+<details>
+
+<summary dir="rtl"> 
+7) چطور میشه یه متغیر رو immutable کرد ؟
+</summary>
+
+<div dir="rtl">
+</div>
+
+</details>
+
+
+## String 
+
+----------
+
+
+<details>
+<summary dir="rtl"> 
+8) تفاوت string با string buffer و string builder ؟
+</summary>
+
+<div dir="rtl">
+
+در جاوا، کلاس‌های `String`, `StringBuffer`, و `StringBuilder` برای کار با رشته‌ها استفاده می‌شوند. هر یک از این کلاس‌ها ویژگی‌ها و کاربردهای خاص خود را دارند. در ادامه به تفاوت‌ها و ویژگی‌های این کلاس‌ها می‌پردازیم:
+
+### 1. کلاس `String`
+
+**ویژگی‌ها:**
+- **Immutable (غیرقابل تغییر):** پس از ایجاد یک شیء `String`، نمی‌توان محتوای آن را تغییر داد. هر تغییر در یک شیء `String` باعث ایجاد یک شیء جدید می‌شود.
+- **کلاس نهایی (final):** نمی‌توان از کلاس `String` ارث‌بری کرد.
+
+**مثال:**
+```java
+String str1 = "Hello";
+String str2 = str1.concat(" World"); // str1 تغییر نمی‌کند، یک شیء جدید ایجاد می‌شود
+System.out.println(str1); // خروجی: Hello
+System.out.println(str2); // خروجی: Hello World
+```
+
+### 2. کلاس `StringBuffer`
+
+**ویژگی‌ها:**
+- **Mutable (قابل تغییر):** محتوای `StringBuffer` پس از ایجاد می‌تواند تغییر کند.
+- **Thread-safe (ایمن در برابر دسترسی چند نخی):** متدهای `StringBuffer` هماهنگ (synchronized) هستند، بنابراین برای استفاده در محیط‌های چند نخی (multi-threaded) مناسب است.
+- **کندتر از `StringBuilder`:** به دلیل هماهنگی متدها، عملیات‌ها کمی کندتر از `StringBuilder` هستند.
+
+**مثال:**
+```java
+StringBuffer sb = new StringBuffer("Hello");
+sb.append(" World");
+System.out.println(sb.toString()); // خروجی: Hello World
+```
+
+### 3. کلاس `StringBuilder`
+
+**ویژگی‌ها:**
+- **Mutable (قابل تغییر):** محتوای `StringBuilder` پس از ایجاد می‌تواند تغییر کند.
+- **Not thread-safe (ایمن در برابر دسترسی چند نخی نیست):** متدهای `StringBuilder` هماهنگ (synchronized) نیستند، بنابراین برای استفاده در محیط‌های تک‌نخی (single-threaded) یا در مواردی که هماهنگی توسط برنامه‌نویس مدیریت می‌شود، مناسب است.
+- **سریع‌تر از `StringBuffer`:** به دلیل عدم هماهنگی متدها، عملیات‌ها سریع‌تر از `StringBuffer` هستند.
+
+**مثال:**
+```java
+StringBuilder sb = new StringBuilder("Hello");
+sb.append(" World");
+System.out.println(sb.toString()); // خروجی: Hello World
+```
+
+### تفاوت‌های کلیدی
+
+1. **قابلیت تغییر (Mutability):**
+   - `String` غیرقابل تغییر (Immutable) است. هر تغییر در رشته باعث ایجاد یک شیء جدید می‌شود.
+   - `StringBuffer` و `StringBuilder` قابل تغییر (Mutable) هستند. می‌توان محتوای آن‌ها را بدون ایجاد شیء جدید تغییر داد.
+
+2. **ایمنی در برابر دسترسی چند نخی (Thread Safety):**
+   - `String` ذاتاً ایمن در برابر دسترسی چند نخی است زیرا غیرقابل تغییر است.
+   - `StringBuffer` ایمن در برابر دسترسی چند نخی است زیرا متدهای آن هماهنگ (synchronized) هستند.
+   - `StringBuilder` ایمن در برابر دسترسی چند نخی نیست زیرا متدهای آن هماهنگ نیستند.
+
+3. **کارایی (Performance):**
+   - `String` به دلیل ایجاد اشیاء جدید در هر تغییر، کندتر از `StringBuffer` و `StringBuilder` است.
+   - `StringBuffer` به دلیل هماهنگی متدها، کمی کندتر از `StringBuilder` است.
+   - `StringBuilder` سریع‌ترین گزینه است زیرا متدهای آن هماهنگ نیستند.
+
+### موارد استفاده
+
+- از `String` برای رشته‌های ثابت و غیرقابل تغییر استفاده کنید.
+- از `StringBuffer` در برنامه‌هایی استفاده کنید که نیاز به تغییر رشته‌ها در محیط‌های چند نخی دارند.
+- از `StringBuilder` در برنامه‌هایی استفاده کنید که نیاز به تغییر رشته‌ها در محیط‌های تک‌نخی دارند یا هماهنگی دسترسی چند نخی توسط برنامه‌نویس مدیریت می‌شود.
+
+### نتیجه‌گیری
+
+با توجه به تفاوت‌های بالا، انتخاب بین `String`, `StringBuffer`, و `StringBuilder` بستگی به نیازهای خاص برنامه شما دارد. برای رشته‌های ثابت از `String`، برای تغییر رشته‌ها در محیط‌های چند نخی از `StringBuffer`، و برای تغییر رشته‌ها در محیط‌های تک‌نخی از `StringBuilder` استفاده کنید.
+
+</div>
+
+</details>
+
+
+<details>
+<summary dir="rtl"> 
+9) 	تفاوت new کردن string با literal(مستقیم)  تعریف کردن اون ؟
+</summary>
+
+<div dir="rtl">
+
+در جاوا، تعریف یک رشته (`String`) به دو روش اصلی انجام می‌شود: استفاده از literal (مستقیم) و استفاده از کلمه کلیدی `new`. هر یک از این روش‌ها رفتار متفاوتی دارد و تفاوت‌های مهمی بین آن‌ها وجود دارد. در ادامه به بررسی این تفاوت‌ها می‌پردازیم:
+
+### استفاده از String Literal
+
+وقتی یک رشته به صورت مستقیم و با استفاده از literal تعریف می‌شود، به طور خودکار در یک مکان ویژه به نام "String Pool" در حافظه ذخیره می‌شود. اگر رشته دیگری با همان مقدار ایجاد شود، به جای ایجاد یک شیء جدید، به همان شیء موجود در String Pool اشاره می‌کند.
+
+**مثال:**
+
+```java
+String str1 = "Hello";
+String str2 = "Hello";
+
+System.out.println(str1 == str2); // خروجی: true
+System.out.println(str1.equals(str2)); // خروجی: true
+```
+
+در این مثال، `str1` و `str2` هر دو به همان شیء در String Pool اشاره می‌کنند، بنابراین عملگر `==` که مراجع را مقایسه می‌کند، `true` بازمی‌گرداند.
+
+### استفاده از کلمه کلیدی new
+
+وقتی یک رشته با استفاده از کلمه کلیدی `new` تعریف می‌شود، حتی اگر رشته دیگری با همان مقدار وجود داشته باشد، یک شیء جدید در حافظه heap ایجاد می‌شود و به String Pool اشاره نمی‌کند.
+
+**مثال:**
+
+```java
+String str3 = new String("Hello");
+String str4 = new String("Hello");
+
+System.out.println(str3 == str4); // خروجی: false
+System.out.println(str3.equals(str4)); // خروجی: true
+```
+
+در این مثال، `str3` و `str4` به دو شیء مختلف در حافظه heap اشاره می‌کنند، بنابراین عملگر `==` که مراجع را مقایسه می‌کند، `false` بازمی‌گرداند. اما متد `equals` که محتوا را مقایسه می‌کند، `true` بازمی‌گرداند.
+
+### تفاوت‌های کلیدی
+
+1. **String Pool:**
+   - **Literal:** رشته‌های ایجاد شده با استفاده از literal به String Pool اضافه می‌شوند. اگر رشته‌ای با همان مقدار قبلاً در String Pool وجود داشته باشد، به همان شیء اشاره می‌کند.
+   - **new:** رشته‌های ایجاد شده با استفاده از `new` مستقیماً به حافظه heap می‌روند و هر بار یک شیء جدید ایجاد می‌کنند، حتی اگر مقدار یکسان باشد.
+
+2. **کارایی:**
+   - **Literal:** استفاده از literal کارایی بیشتری دارد زیرا باعث استفاده مجدد از اشیاء موجود در String Pool می‌شود و از ایجاد اشیاء اضافی جلوگیری می‌کند.
+   - **new:** استفاده از `new` حافظه بیشتری مصرف می‌کند زیرا هر بار یک شیء جدید ایجاد می‌کند.
+
+3. **مقایسه مراجع:**
+   - **Literal:** رشته‌های ایجاد شده با literal که مقدار یکسانی دارند، به همان شیء در String Pool اشاره می‌کنند، بنابراین مقایسه با `==` نتیجه `true` می‌دهد.
+   - **new:** رشته‌های ایجاد شده با `new` حتی اگر مقدار یکسانی داشته باشند، به اشیاء مختلفی اشاره می‌کنند، بنابراین مقایسه با `==` نتیجه `false` می‌دهد.
+
+### نتیجه‌گیری
+
+- **استفاده از literal:** زمانی که می‌خواهید رشته‌های ثابت و بدون تغییر داشته باشید، استفاده از literal مناسب است. این روش کارایی بیشتری دارد و از حافظه بهینه‌تر استفاده می‌کند.
+- **استفاده از new:** زمانی که نیاز به ایجاد رشته‌های جدید و مجزا دارید، استفاده از `new` مناسب است. این روش هر بار یک شیء جدید ایجاد می‌کند و به String Pool اشاره نمی‌کند.
+
+با درک این تفاوت‌ها، می‌توانید تصمیم بگیرید که کدام روش برای نیازهای خاص برنامه شما مناسب‌تر است.
+</div>
+
+</details>
+
+
+<details>
+<summary dir="rtl"> 
+10)	String pool چیه؟	هدف از ساخت string pool چی بوده ؟
+</summary>
+
+<div dir="rtl">
+
+### String Pool چیست؟
+
+`String Pool` در جاوا یک ناحیه حافظه ویژه در `Heap` است که برای ذخیره‌سازی رشته‌های `String` استفاده می‌شود. این ناحیه به طور خاص برای مدیریت بهینه رشته‌ها طراحی شده است. وقتی یک رشته با استفاده از literal (مستقیم) تعریف می‌شود، JVM ابتدا بررسی می‌کند که آیا رشته‌ای با همان مقدار در `String Pool` وجود دارد یا نه. اگر وجود داشته باشد، مرجع به همان شیء بازگشت داده می‌شود؛ در غیر این صورت، رشته جدیدی ایجاد شده و در `String Pool` ذخیره می‌شود.
+
+### هدف از ساخت String Pool
+
+هدف اصلی از ایجاد `String Pool` در جاوا بهبود کارایی و استفاده بهینه از حافظه است. برخی از اهداف کلیدی شامل موارد زیر هستند:
+
+1. **صرفه‌جویی در حافظه:**
+   - با استفاده از `String Pool`، رشته‌های تکراری تنها یک بار در حافظه ذخیره می‌شوند. به جای ایجاد چندین شیء `String` با همان مقدار، یک شیء واحد ایجاد می‌شود و تمامی مراجع به آن شیء اشاره می‌کنند.
+
+2. **بهبود کارایی:**
+   - با جلوگیری از ایجاد اشیاء تکراری، JVM می‌تواند کارایی برنامه را بهبود بخشد. این کار باعث کاهش زمان و منابع مورد نیاز برای تخصیص و مدیریت حافظه می‌شود.
+
+3. **کاهش هزینه‌های Garbage Collection:**
+   - تعداد کمتر اشیاء `String` در حافظه به معنای کاهش بار بر روی Garbage Collector است، زیرا اشیاء کمتری برای مدیریت و پاکسازی وجود دارد.
+
+### مثال
+
+برای درک بهتر `String Pool` و رفتار آن، بیایید یک مثال ساده را بررسی کنیم:
+
+```java
+public class StringPoolExample {
+    public static void main(String[] args) {
+        // رشته ایجاد شده با literal
+        String str1 = "Hello";
+        String str2 = "Hello";
+
+        // رشته ایجاد شده با کلمه کلیدی new
+        String str3 = new String("Hello");
+        String str4 = new String("Hello");
+
+        // مقایسه مراجع
+        System.out.println(str1 == str2); // خروجی: true
+        System.out.println(str1 == str3); // خروجی: false
+        System.out.println(str3 == str4); // خروجی: false
+
+        // مقایسه محتوا
+        System.out.println(str1.equals(str3)); // خروجی: true
+        System.out.println(str3.equals(str4)); // خروجی: true
+    }
+}
+```
+
+### توضیح
+
+1. **استفاده از literal:**
+   - `str1` و `str2` به همان شیء در `String Pool` اشاره می‌کنند، بنابراین `str1 == str2` نتیجه `true` می‌دهد.
+
+2. **استفاده از کلمه کلیدی new:**
+   - `str3` و `str4` به دو شیء مجزا در heap اشاره می‌کنند، بنابراین `str3 == str4` نتیجه `false` می‌دهد.
+
+### چگونه می‌توان یک رشته را به String Pool اضافه کرد؟
+
+اگر یک رشته با استفاده از کلمه کلیدی `new` ایجاد شده باشد و بخواهیم آن را به `String Pool` اضافه کنیم، می‌توانیم از متد `intern()` استفاده کنیم:
+
+```java
+String str5 = new String("Hello");
+String str6 = str5.intern(); // str6 به شیء موجود در String Pool اشاره می‌کند
+
+System.out.println(str5 == str6); // خروجی: false
+System.out.println(str1 == str6); // خروجی: true
+```
+
+### نتیجه‌گیری
+
+`String Pool` در جاوا یک مکانیزم قدرتمند برای مدیریت کارآمد حافظه و بهبود کارایی برنامه‌ها است. این مکانیزم با جلوگیری از ایجاد رشته‌های تکراری، صرفه‌جویی قابل توجهی در حافظه و کاهش بار بر روی Garbage Collector را فراهم می‌کند. استفاده صحیح از `String Pool` می‌تواند تاثیر قابل توجهی بر عملکرد و کارایی برنامه‌های جاوا داشته باشد.
 
 </div>
 
