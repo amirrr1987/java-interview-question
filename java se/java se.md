@@ -752,6 +752,8 @@ public class Main {
 
 **مثال:**
 
+</div>
+
 ```java
 public class Main {
     public static void main(String[] args) {
@@ -766,6 +768,8 @@ public class Main {
 }
 ```
 
+<div dir="rtl">
+
 ### اشیاء (Objects)
 
 در مورد اشیاء، همان قانون "pass by value" اعمال می‌شود، اما اینجا تفاوت اصلی به دلیل نحوه مدیریت مرجع‌ها (references) به وجود می‌آید. وقتی یک شیء به یک متد ارسال می‌شود، یک کپی از مرجع (reference) آن شیء ارسال می‌شود، نه خود شیء. به عبارت دیگر، مرجع به شیء کپی می‌شود، اما هر دو مرجع به همان شیء در حافظه اشاره می‌کنند.
@@ -773,6 +777,9 @@ public class Main {
 بنابراین، اگر شما متغیرهای داخلی شیء را تغییر دهید، این تغییرات روی شیء اصلی اعمال می‌شود، اما اگر مرجع را تغییر دهید (مثلاً به یک شیء جدید اشاره کنید)، این تغییر فقط در محدوده همان متد است و تأثیری بر مرجع اصلی خارج از متد ندارد.
 
 **مثال:**
+
+</div>
+
 
 ```java
 class MyObject {
@@ -793,7 +800,11 @@ public class Main {
 }
 ```
 
+<div dir="rtl">
+
 **مثال دیگر:**
+
+</div>
 
 ```java
 class MyObject {
@@ -814,6 +825,8 @@ public class Main {
     }
 }
 ```
+
+<div dir="rtl">
 
 ### نتیجه‌گیری
 
@@ -847,7 +860,10 @@ public class Main {
    - به اعضای کلاس بیرونی دسترسی مستقیم دارد، حتی اگر اعضا `private` باشند.
 
    **مثال:**
-   ```java
+
+</div>
+
+```java
    class TestMemberOuter1 {
        private int data = 30;
 
@@ -863,13 +879,18 @@ public class Main {
            in.msg(); // خروجی: data is 30
        }
    }
-   ```
+```
+
+<div dir="rtl">
 
 2. **Anonymous Inner Class:**
    - یک `Inner Class` که بدون نام است و برای پیاده‌سازی یک اینترفیس یا گسترش یک کلاس استفاده می‌شود.
    - معمولاً برای پیاده‌سازی‌های فوری و کوتاه مدت استفاده می‌شود.
 
    **مثال:**
+
+</div>
+
    ```java
    abstract class Person {
        abstract void eat();
@@ -887,11 +908,16 @@ public class Main {
    }
    ```
 
+<div dir="rtl">
+
 3. **Local Inner Class:**
    - یک `Inner Class` که درون یک متد، سازنده یا بلوک تعریف می‌شود.
    - فقط در داخل متد یا بلوک که در آن تعریف شده است قابل دسترسی است.
 
    **مثال:**
+
+</div>
+
    ```java
    public class localInner1 {
        private int data = 30; // متغیر نمونه
@@ -913,12 +939,19 @@ public class Main {
    }
    ```
 
+<div dir="rtl">
+
 ### Static Nested Class
 
 - یک `Nested Class` که با استفاده از کلمه کلیدی `static` تعریف شده و می‌تواند بدون نیاز به نمونه‌ای از کلاس بیرونی استفاده شود.
 - به اعضای `static` کلاس بیرونی دسترسی مستقیم دارد، اما به اعضای `instance` دسترسی ندارد مگر اینکه یک نمونه از کلاس بیرونی داشته باشد.
 
 **مثال:**
+
+</div>
+
+<div dir="rtl">
+
 ```java
 class Outer {
     static int data = 30;
@@ -968,6 +1001,8 @@ class Outer {
 
 یک کلاس `Person` را به‌صورت `immutable` ایجاد می‌کنیم:
 
+</div>
+
 ```java
 public final class Person {
     private final String name;
@@ -1016,6 +1051,8 @@ public class Main {
 }
 ```
 
+<div dir="rtl">
+
 ### توضیحات
 
 1. **کلاس `Person` به‌صورت `final` تعریف شده است:**
@@ -1062,6 +1099,9 @@ Reflection یک ویژگی قدرتمند در جاوا است که به برن�
 4. **دسترسی و تغییر فیلدها در زمان اجرا:** حتی اگر این فیلدها خصوصی باشند.
 
 **مثال:**
+
+</div>
+
 ```java
 import java.lang.reflect.*;
 
@@ -1090,6 +1130,8 @@ public class ReflectionExample {
 }
 ```
 
+<div dir="rtl">
+
 ### Aspect-Oriented Programming (AOP)
 
 **تعریف:**
@@ -1109,6 +1151,9 @@ AOP یک پارادایم برنامه‌نویسی است که هدف آن جد
 
 **مثال:**
 استفاده از Spring AOP برای لاگ‌گیری از متدها:
+
+</div>
+
 ```java
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -1123,6 +1168,8 @@ public class LoggingAspect {
     }
 }
 ```
+
+<div dir="rtl">
 
 ### تفاوت‌های کلیدی
 
@@ -1186,6 +1233,8 @@ Reflection و AOP هر دو ابزارهای قدرتمندی در جاوا هس
 
 برای درک بهتر تفاوت‌ها، بیایید یک مثال عملی را بررسی کنیم:
 
+</div>
+
 ```java
 public class MemoryExample {
     public static void main(String[] args) {
@@ -1213,6 +1262,7 @@ class MyClass {
     }
 }
 ```
+<div dir="rtl">
 
 ### توضیحات:
 
@@ -1396,12 +1446,17 @@ Garbage Collector در جاوا از یک معماری چند نسلی استف�
 - **کلاس نهایی (final):** نمی‌توان از کلاس `String` ارث‌بری کرد.
 
 **مثال:**
+
+</div>
+
 ```java
 String str1 = "Hello";
 String str2 = str1.concat(" World"); // str1 تغییر نمی‌کند، یک شیء جدید ایجاد می‌شود
 System.out.println(str1); // خروجی: Hello
 System.out.println(str2); // خروجی: Hello World
 ```
+
+<div dir="rtl">
 
 ### 2. کلاس `StringBuffer`
 
@@ -1411,11 +1466,15 @@ System.out.println(str2); // خروجی: Hello World
 - **کندتر از `StringBuilder`:** به دلیل هماهنگی متدها، عملیات‌ها کمی کندتر از `StringBuilder` هستند.
 
 **مثال:**
+
+</div>
+
 ```java
 StringBuffer sb = new StringBuffer("Hello");
 sb.append(" World");
 System.out.println(sb.toString()); // خروجی: Hello World
 ```
+<div dir="rtl">
 
 ### 3. کلاس `StringBuilder`
 
@@ -1425,11 +1484,15 @@ System.out.println(sb.toString()); // خروجی: Hello World
 - **سریع‌تر از `StringBuffer`:** به دلیل عدم هماهنگی متدها، عملیات‌ها سریع‌تر از `StringBuffer` هستند.
 
 **مثال:**
+
+</div>
+
 ```java
 StringBuilder sb = new StringBuilder("Hello");
 sb.append(" World");
 System.out.println(sb.toString()); // خروجی: Hello World
 ```
+<div dir="rtl">
 
 ### تفاوت‌های کلیدی
 
@@ -1477,6 +1540,8 @@ System.out.println(sb.toString()); // خروجی: Hello World
 
 **مثال:**
 
+</div>
+
 ```java
 String str1 = "Hello";
 String str2 = "Hello";
@@ -1484,6 +1549,8 @@ String str2 = "Hello";
 System.out.println(str1 == str2); // خروجی: true
 System.out.println(str1.equals(str2)); // خروجی: true
 ```
+
+<div dir="rtl">
 
 در این مثال، `str1` و `str2` هر دو به همان شیء در String Pool اشاره می‌کنند، بنابراین عملگر `==` که مراجع را مقایسه می‌کند، `true` بازمی‌گرداند.
 
@@ -1493,6 +1560,8 @@ System.out.println(str1.equals(str2)); // خروجی: true
 
 **مثال:**
 
+</div>
+
 ```java
 String str3 = new String("Hello");
 String str4 = new String("Hello");
@@ -1500,6 +1569,8 @@ String str4 = new String("Hello");
 System.out.println(str3 == str4); // خروجی: false
 System.out.println(str3.equals(str4)); // خروجی: true
 ```
+
+<div dir="rtl">
 
 در این مثال، `str3` و `str4` به دو شیء مختلف در حافظه heap اشاره می‌کنند، بنابراین عملگر `==` که مراجع را مقایسه می‌کند، `false` بازمی‌گرداند. اما متد `equals` که محتوا را مقایسه می‌کند، `true` بازمی‌گرداند.
 
@@ -1556,6 +1627,8 @@ System.out.println(str3.equals(str4)); // خروجی: true
 
 برای درک بهتر `String Pool` و رفتار آن، بیایید یک مثال ساده را بررسی کنیم:
 
+</div>
+
 ```java
 public class StringPoolExample {
     public static void main(String[] args) {
@@ -1579,6 +1652,8 @@ public class StringPoolExample {
 }
 ```
 
+<div dir="rtl">
+
 ### توضیح
 
 1. **استفاده از literal:**
@@ -1591,6 +1666,8 @@ public class StringPoolExample {
 
 اگر یک رشته با استفاده از کلمه کلیدی `new` ایجاد شده باشد و بخواهیم آن را به `String Pool` اضافه کنیم، می‌توانیم از متد `intern()` استفاده کنیم:
 
+</div>
+
 ```java
 String str5 = new String("Hello");
 String str6 = str5.intern(); // str6 به شیء موجود در String Pool اشاره می‌کند
@@ -1598,6 +1675,7 @@ String str6 = str5.intern(); // str6 به شیء موجود در String Pool ا�
 System.out.println(str5 == str6); // خروجی: false
 System.out.println(str1 == str6); // خروجی: true
 ```
+<div dir="rtl">
 
 ### نتیجه‌گیری
 
@@ -1611,3 +1689,147 @@ System.out.println(str1 == str6); // خروجی: true
 ## Collection
 
 ----------
+
+<details>
+
+<summary dir="rtl"> 
+14) تعریف collection ؟
+</summary>
+
+<div dir="rtl">
+
+در واقع، در جاوا دو مفهوم جداگانه وجود دارند که ممکن است باعث سردرگمی شوند: `Collection` و `Collections`.
+
+1. **Collection:** این یک `interface` است که بخشی از `java.util` است و پایه‌ای برای چارچوب مجموعه‌ها (Collection Framework) فراهم می‌کند. این `interface` شامل متدهایی برای کار با مجموعه‌ها است، مانند افزودن، حذف و پیمایش عناصر.
+
+2. **Collections:** این یک `class` در `java.util` است که شامل متدهای کمکی برای کار با مجموعه‌ها است. `Collections` کلاس شامل متدهای ایستایی (static methods) است که عملیات‌هایی مانند مرتب‌سازی، جستجو و تغییر در مجموعه‌ها را انجام می‌دهند.
+
+### `Collection` Interface
+
+`Collection` یک `interface` است که شامل متدهای عمومی برای کار با مجموعه‌ها است.
+
+</div>
+
+```java
+import java.util.*;
+
+public interface Collection<E> extends Iterable<E> {
+    int size();
+    boolean isEmpty();
+    boolean contains(Object o);
+    Iterator<E> iterator();
+    Object[] toArray();
+    <T> T[] toArray(T[] a);
+    boolean add(E e);
+    boolean remove(Object o);
+    boolean containsAll(Collection<?> c);
+    boolean addAll(Collection<? extends E> c);
+    boolean removeAll(Collection<?> c);
+    boolean retainAll(Collection<?> c);
+    void clear();
+    boolean equals(Object o);
+    int hashCode();
+}
+```
+
+<div dir="rtl">
+
+### `Collections` Class
+
+`Collections` یک `class` نهایی (final class) است که شامل متدهای کمکی ایستایی برای کار با مجموعه‌ها است.
+
+</div>
+
+```java
+import java.util.*;
+
+public final class Collections {
+    public static <T> void sort(List<T> list) {
+        // متد برای مرتب‌سازی لیست
+    }
+
+    public static <T> int binarySearch(List<? extends Comparable<? super T>> list, T key) {
+        // متد برای جستجوی دودویی در لیست
+    }
+
+    // متدهای کمکی دیگر
+}
+```
+<div dir="rtl">
+
+### نتیجه‌گیری
+
+- **Collection:** یک `interface` است که پایه‌ای برای چارچوب مجموعه‌ها فراهم می‌کند و شامل متدهای عمومی برای کار با مجموعه‌ها است.
+- **Collections:** یک `class` نهایی (final class) است که شامل متدهای کمکی ایستایی برای کار با مجموعه‌ها است.
+
+مثال استفاده از هر دو:
+
+</div>
+
+```java
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        // استفاده از Collection interface
+        Collection<String> collection = new ArrayList<>();
+        collection.add("Java");
+        collection.add("Python");
+        collection.add("C++");
+
+        System.out.println("Collection: " + collection);
+
+        // استفاده از Collections class
+        List<String> list = new ArrayList<>(collection);
+        Collections.sort(list);
+        System.out.println("Sorted List: " + list);
+    }
+}
+```
+
+<div dir="rtl">
+
+با این توضیحات، حالا تفاوت بین `Collection` و `Collections` مشخص‌تر شده و می‌توان تفاوت بین این دو را به خوبی درک کرد.
+
+
+### interface های اصلی که از `Collection` ارث‌بری می‌کنند
+
+1. **List:** یک مجموعه مرتب که می‌تواند شامل عناصر تکراری باشد. پیاده‌سازی‌های معروف شامل `ArrayList`, `LinkedList`, و `Vector`.
+2. **Set:** یک مجموعه که نمی‌تواند شامل عناصر تکراری باشد. پیاده‌سازی‌های معروف شامل `HashSet`, `LinkedHashSet`, و `TreeSet`.
+3. **Queue:** یک مجموعه که عناصر را به ترتیب خاصی برای پردازش نگهداری می‌کند. پیاده‌سازی‌های معروف شامل `PriorityQueue` و `LinkedList`.
+
+### پیاده‌سازی‌های مختلف `Collection`
+
+بسیاری از کلاس‌ها در جاوا از `Collection` یا interfaceهای فرعی آن ارث‌بری می‌کنند. این پیاده‌سازی‌ها ویژگی‌ها و کاربردهای خاص خود را دارند. در زیر چند مثال از پیاده‌سازی‌های مختلف آورده شده است:
+
+**مثال: `ArrayList` که یک `List` است و از `Collection` ارث‌بری می‌کند**
+
+</div>
+
+```java
+import java.util.ArrayList;
+import java.util.Collection;
+
+public class Main {
+    public static void main(String[] args) {
+        Collection<String> collection = new ArrayList<>();
+        collection.add("Java");
+        collection.add("Python");
+        collection.add("C++");
+
+        System.out.println("Collection: " + collection);
+        System.out.println("Size: " + collection.size());
+        System.out.println("Contains 'Java': " + collection.contains("Java"));
+    }
+}
+```
+
+<div dir="rtl">
+
+### نتیجه‌گیری
+
+`Collection` در جاوا یک `interface` است و پایه‌ای برای بسیاری از رابط‌ها و کلاس‌های موجود در چارچوب جمع‌آوری (Collection Framework) جاوا فراهم می‌کند. این `interface` مجموعه‌ای از متدها را تعریف می‌کند که همه‌ی انواع مجموعه‌ها باید پیاده‌سازی کنند، و از این رو، ساختار و رفتار مجموعه‌ها در جاوا را استانداردسازی می‌کند.
+</div>
+
+</details>
+
