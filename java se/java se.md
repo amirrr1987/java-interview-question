@@ -1833,3 +1833,235 @@ public class Main {
 
 </details>
 
+<details>
+<summary dir="rtl"> 
+15) تفاوت array با arrayList ؟
+</summary>
+
+<div dir="rtl">
+
+تفاوت‌های کلیدی بین `Array` و `ArrayList` در جاوا را می‌توان به چند دسته تقسیم کرد: ساختار، اندازه، عملکرد، و ویژگی‌ها. در ادامه به بررسی این تفاوت‌ها به همراه مثال‌هایی خواهیم پرداخت.
+
+### 1. ساختار
+
+- **Array (آرایه):** یک ساختار داده ثابت است که می‌تواند شامل عناصر از یک نوع مشخص باشد. اندازه آرایه در زمان ایجاد مشخص می‌شود و نمی‌توان آن را تغییر داد.
+
+- **ArrayList:** یک کلاس از کتابخانه جاوا است که یک لیست پویا (قابل تغییر اندازه) از عناصر از یک نوع مشخص را فراهم می‌کند. اندازه ArrayList می‌تواند به طور پویا تغییر کند.
+
+### 2. اندازه
+
+- **Array:** اندازه آرایه در زمان ایجاد مشخص می‌شود و پس از آن نمی‌توان اندازه آن را تغییر داد.
+
+</div>
+
+ ```java
+ int[] array = new int[5]; // اندازه ثابت: 5
+ ```
+
+<div dir="rtl">
+
+- **ArrayList:** اندازه ArrayList به طور پویا تغییر می‌کند و می‌توان به راحتی عناصر را اضافه یا حذف کرد.
+
+</div>
+
+ ```java
+ ArrayList<Integer> arrayList = new ArrayList<>(); // اندازه پویا
+ arrayList.add(1);
+ arrayList.add(2);
+ ```
+
+<div dir="rtl">
+
+### 3. عملکرد
+
+- **Array:** دسترسی به عناصر آرایه بسیار سریع است و زمان دسترسی O(1) است.
+
+</div>
+
+ ```java
+ int element = array[2]; // دسترسی سریع به عنصر
+ ```
+
+<div dir="rtl">
+
+- **ArrayList:** دسترسی به عناصر ArrayList نیز سریع است، اما ممکن است در برخی موارد کندتر از آرایه باشد به دلیل عملیات‌های داخلی مانند افزایش اندازه.
+
+</div>
+
+ ```java
+ int element = arrayList.get(2); // دسترسی سریع به عنصر
+ ```
+
+<div dir="rtl">
+
+### 4. ویژگی‌ها
+
+- **Array:** آرایه‌ها می‌توانند شامل انواع ابتدایی (primitives) و اشیاء باشند. آن‌ها نمی‌توانند مستقیماً با ساختارهای داده‌ای کتابخانه‌های جاوا کار کنند.
+
+</div>
+
+ ```java
+ int[] intArray = {1, 2, 3}; // آرایه از انواع ابتدایی
+ String[] strArray = {"A", "B", "C"}; // آرایه از اشیاء
+ ```
+
+<div dir="rtl">
+
+- **ArrayList:** ArrayList فقط می‌تواند شامل اشیاء باشد و نمی‌تواند شامل انواع ابتدایی باشد. برای استفاده از انواع ابتدایی باید از نوع Wrapper استفاده کرد. ArrayList به طور مستقیم از رابط List پیروی می‌کند و می‌تواند با دیگر ساختارهای داده‌ای کتابخانه‌های جاوا تعامل داشته باشد.
+
+</div>
+
+ ```java
+ ArrayList<Integer> intList = new ArrayList<>(); // استفاده از نوع Wrapper برای انواع ابتدایی
+ intList.add(1);
+ intList.add(2);
+
+ ArrayList<String> strList = new ArrayList<>(); // استفاده از اشیاء
+ strList.add("A");
+ strList.add("B");
+ ```
+
+<div dir="rtl">
+
+### 5. عملیات‌های اضافی
+
+- **Array:** عملیات‌های محدودتری نسبت به ArrayList دارند. اضافه کردن، حذف کردن، و تغییر اندازه نیاز به کدهای اضافی دارد.
+
+- **ArrayList:** عملیات‌های بیشتری مانند افزودن، حذف کردن، مرتب‌سازی، و جستجو را ارائه می‌دهد. این عملیات‌ها به سادگی با استفاده از متدهای موجود در کلاس ArrayList انجام می‌شوند.
+
+</div>
+
+ ```java
+ arrayList.add(3); // افزودن عنصر
+ arrayList.remove(1); // حذف عنصر
+ Collections.sort(arrayList); // مرتب‌سازی عناصر
+ ```
+<div dir="rtl">
+
+### مثال مقایسه‌ای:
+
+**مثال با Array:**
+
+</div>
+
+```java
+public class ArrayExample {
+    public static void main(String[] args) {
+        int[] array = new int[5]; // ایجاد آرایه با اندازه ثابت
+        array[0] = 1;
+        array[1] = 2;
+        array[2] = 3;
+        array[3] = 4;
+        array[4] = 5;
+
+        // دسترسی به عناصر آرایه
+        for (int i = 0; i < array.length; i++) {
+            System.out.println("Element at index " + i + ": " + array[i]);
+        }
+    }
+}
+```
+
+<div dir="rtl">
+
+**مثال با ArrayList:**
+
+</div>
+
+```java
+import java.util.ArrayList;
+import java.util.Collections;
+
+public class ArrayListExample {
+    public static void main(String[] args) {
+        ArrayList<Integer> arrayList = new ArrayList<>(); // ایجاد ArrayList با اندازه پویا
+        arrayList.add(1);
+        arrayList.add(2);
+        arrayList.add(3);
+        arrayList.add(4);
+        arrayList.add(5);
+
+        // دسترسی به عناصر ArrayList
+        for (int i = 0; i < arrayList.size(); i++) {
+            System.out.println("Element at index " + i + ": " + arrayList.get(i));
+        }
+
+        // حذف عنصر از ArrayList
+        arrayList.remove(2); // حذف عنصر در اندیس 2
+
+        // اضافه کردن عنصر به ArrayList
+        arrayList.add(6);
+
+        // مرتب‌سازی ArrayList
+        Collections.sort(arrayList);
+
+        System.out.println("Sorted ArrayList: " + arrayList);
+    }
+}
+```
+
+<div dir="rtl">
+
+### نتیجه‌گیری
+
+- **Array:** برای زمانی مناسب است که اندازه مجموعه داده‌ها ثابت باشد و نیاز به دسترسی سریع به عناصر داشته باشید.
+- **ArrayList:** برای زمانی مناسب است که نیاز به یک لیست پویا با اندازه متغیر داشته باشید و از ویژگی‌های اضافی مانند افزودن، حذف کردن، و مرتب‌سازی بهره‌مند شوید.
+
+هر دو ابزار در جاوا دارای کاربردهای خاص خود هستند و انتخاب بین آن‌ها بستگی به نیازهای خاص برنامه شما دارد.
+
+</div>
+
+</details>
+
+<details>
+<summary dir="rtl"> 
+16) متد unmodife توی ایرنتفیس collection ؟
+</summary>
+
+<div dir="rtl">
+در جاوا، متد `unmodifiableCollection` از کلاس `Collections` ارائه شده تا یک نمای غیرقابل تغییر (unmodifiable view) از یک مجموعه (collection) ارائه دهد. این متد به شما امکان می‌دهد که یک کلکشن را به گونه‌ای بسته‌بندی کنید که نتوان آن را تغییر داد. تلاش برای تغییر این نوع از مجموعه‌ها، مانند افزودن یا حذف عناصر، منجر به پرتاب استثنا یا خطای `UnsupportedOperationException` خواهد شد.
+
+### نحوه استفاده از `unmodifiableCollection`
+
+برای استفاده از این متد، باید ابتدا یک مجموعه (مانند `ArrayList`, `HashSet` و غیره) داشته باشید و سپس از متد `Collections.unmodifiableCollection` برای دریافت یک نمای غیرقابل تغییر از آن استفاده کنید. در زیر یک مثال ساده آورده شده است:
+
+</div>
+
+
+```java
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        List<String> list = new ArrayList<>();
+        list.add("Hello");
+        list.add("World");
+
+        Collection<String> unmodifiableList = Collections.unmodifiableCollection(list);
+
+        System.out.println("Original list: " + list);
+
+        // هر تلاش برای تغییر unmodifiableList منجر به خطا می‌شود
+        try {
+            unmodifiableList.add("Test");
+        } catch (UnsupportedOperationException e) {
+            System.out.println("Cannot modify the unmodifiable collection.");
+        }
+
+        System.out.println("Unmodifiable list after attempt to add: " + unmodifiableList);
+    }
+}
+```
+<div dir="rtl">
+
+### توضیحات کد
+
+1. **ایجاد لیست**: یک لیست `ArrayList` ایجاد می‌کنیم و دو رشته به آن اضافه می‌کنیم.
+2. **ایجاد نمای غیر قابل تغییر**: با استفاده از `Collections.unmodifiableCollection`، یک نمای غیرقابل تغییر از لیست ایجاد شده را دریافت می‌کنیم.
+3. **تلاش برای تغییر**: تلاش برای افزودن یک عنصر به نمای غیرقابل تغییر باعث پرتاب `UnsupportedOperationException` می‌شود.
+
+### کاربردها
+
+این تکنیک معمولاً برای جلوگیری از تغییر داده‌ها توسط کدهای ناخواسته یا اشتباه استفاده می‌شود. این کار امنیت بیشتری به برنامه‌ها می‌بخشد و از بروز خطاهای مرتبط با تغییر داده‌های مشترک جلوگیری می‌کند.
+</div>
+</details>
