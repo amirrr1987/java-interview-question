@@ -997,23 +997,22 @@ class Outer {
 4. **تمام فیلدها را از طریق سازنده مقداردهی کنید.**
 5. **اگر فیلدها از نوع mutable (قابل تغییر) هستند، یک کپی عمیق از آن‌ها در سازنده و getterها ایجاد کنید.**
 
-### مثال
+### مثال:
 
-یک کلاس `Person` را به‌صورت `immutable` ایجاد می‌کنیم:
+### کلاس `Employee` (کلاس مرجع):
 
 </div>
 
 ```java
-public final class Person {
+import java.util.Objects;
+
+public final class Employee {
     private final String name;
     private final int age;
-    private final List<String> hobbies;
 
-    public Person(String name, int age, List<String> hobbies) {
+    public Employee(String name, int age) {
         this.name = name;
         this.age = age;
-        // کپی عمیق برای فیلد mutable
-        this.hobbies = new ArrayList<>(hobbies);
     }
 
     public String getName() {
@@ -1024,29 +1023,91 @@ public final class Person {
         return age;
     }
 
-    // بازگرداندن کپی برای فیلد mutable
-    public List<String> getHobbies() {
-        return new ArrayList<>(hobbies);
+    // متد equals و hashCode برای مقایسه صحیح اشیاء
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Employee employee = (Employee) o;
+        return age == employee.age && Objects.equals(name, employee.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, age);
+    }
+
+    // متد toString برای نمایش اطلاعات شیء
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "name='" + name + '\'' +
+                ", age=" + age +
+                '}';
     }
 }
+```
 
-public class Main {
-    public static void main(String[] args) {
-        List<String> hobbies = new ArrayList<>();
-        hobbies.add("Reading");
-        hobbies.add("Traveling");
+<div dir="rtl">
 
-        Person person = new Person("John", 30, hobbies);
+### کلاس `Company` (کلاس اصلی):
 
-        // تلاش برای تغییر لیست hobbies خارجی
-        hobbies.add("Swimming");
+</div>
 
-        System.out.println(person.getHobbies()); // خروجی: [Reading, Traveling]
 
-        // تلاش برای تغییر لیست hobbies از طریق getter
-        person.getHobbies().add("Swimming");
+```java
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Objects;
 
-        System.out.println(person.getHobbies()); // خروجی: [Reading, Traveling]
+public final class Company {
+    private final String name;
+    private final List<Employee> employees;
+
+    public Company(String name, List<Employee> employees) {
+        this.name = name;
+        // ایجاد کپی عمیق از لیست Employee
+        this.employees = new ArrayList<>(employees.size());
+        for (Employee employee : employees) {
+            this.employees.add(new Employee(employee.getName(), employee.getAge()));
+        }
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public List<Employee> getEmployees() {
+        // بازگرداندن کپی غیر قابل تغییر از لیست Employee
+        List<Employee> copy = new ArrayList<>(employees.size());
+        for (Employee employee : employees) {
+            copy.add(new Employee(employee.getName(), employee.getAge()));
+        }
+        return Collections.unmodifiableList(copy);
+    }
+
+    // متد equals و hashCode برای مقایسه صحیح اشیاء
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Company company = (Company) o;
+        return Objects.equals(name, company.name) && Objects.equals(employees, company.employees);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, employees);
+    }
+
+    // متد toString برای نمایش اطلاعات شیء
+    @Override
+    public String toString() {
+        return "Company{" +
+                "name='" + name + '\'' +
+                ", employees=" + employees +
+                '}';
     }
 }
 ```
@@ -1055,22 +1116,27 @@ public class Main {
 
 ### توضیحات
 
-1. **کلاس `Person` به‌صورت `final` تعریف شده است:**
-   - این کار باعث می‌شود تا هیچ کلاسی نتواند از آن ارث‌بری کند و متدهای آن را تغییر دهد.
+1. **کلاس `Employee` به صورت `final` تعریف شده است:**
+   - این کار باعث می‌شود تا هیچ کلاسی نتواند از `Employee` ارث‌بری کند و متدهای آن را تغییر دهد.
 
-2. **فیلدهای `name`, `age`, و `hobbies` به‌صورت `private` و `final` تعریف شده‌اند:**
+2. **فیلدهای `Employee` به صورت `private` و `final` تعریف شده‌اند:**
    - این کار اطمینان می‌دهد که این فیلدها فقط یک بار مقداردهی می‌شوند و نمی‌توانند تغییر کنند.
 
-3. **هیچ `setter`ای برای فیلدها وجود ندارد:**
-   - این کار از تغییر مقادیر فیلدها بعد از مقداردهی اولیه جلوگیری می‌کند.
+3. **کلاس `Company` به صورت `final` تعریف شده است:**
+   - این کار باعث می‌شود تا هیچ کلاسی نتواند از `Company` ارث‌بری کند و متدهای آن را تغییر دهد.
 
-4. **فیلدهای mutable (قابل تغییر) مانند `List<String>` به‌صورت کپی عمیق مقداردهی می‌شوند:**
-   - در سازنده، یک کپی جدید از لیست ورودی ایجاد می‌شود.
-   - در getter، یک کپی جدید از لیست بازگردانده می‌شود تا از تغییر لیست اصلی جلوگیری شود.
+4. **فیلدهای `Company` به صورت `private` و `final` تعریف شده‌اند:**
+   - این کار اطمینان می‌دهد که این فیلدها فقط یک بار مقداردهی می‌شوند و نمی‌توانند تغییر کنند.
+
+5. **کپی عمیق برای فیلدهای مرجع:**
+   - در سازنده و متد `getEmployees` کلاس `Company`، کپی عمیق از لیست `Employee`ها ایجاد شده است. این کار اطمینان می‌دهد که تغییرات در لیست `Employee`ها بر روی شیء اصلی تاثیری نخواهد داشت.
+
+6. **بازگرداندن لیست غیر قابل تغییر:**
+   - متد `getEmployees` یک لیست غیر قابل تغییر بازمی‌گرداند تا از تغییرات خارجی جلوگیری کند.
 
 ### نتیجه‌گیری
 
-با رعایت این اصول، می‌توانید یک کلاس `immutable` ایجاد کنید که متغیرهای آن پس از مقداردهی اولیه دیگر تغییر نخواهند کرد. این ویژگی باعث می‌شود تا کلاس‌های `immutable` برای استفاده در برنامه‌های چندنخی (multi-threaded) بسیار مناسب باشند، زیرا نیازی به هماهنگ‌سازی (synchronization) برای دسترسی به متغیرها ندارند.
+با رعایت این اصول، شما می‌توانید اطمینان حاصل کنید که شیء `Company` شما پس از مقداردهی اولیه تغییر نمی‌کند و کاملاً `immutable` است. این ویژگی به ویژه در برنامه‌های چندنخی (multi-threaded) بسیار مفید است زیرا نیازی به هماهنگ‌سازی برای دسترسی به متغیرها ندارند.
 
 </div>
 
@@ -1519,6 +1585,569 @@ Garbage Collector در جاوا از یک معماری چند نسلی استف�
 
 </details>
 
+<details>
+<summary dir="rtl"> 
+12) تفاوت deep copy با shallow copy با مثال ؟
+</summary>
+
+<div dir="rtl">
+
+در جاوا، وقتی شما یک شیء را کپی می‌کنید، می‌توانید از دو روش اصلی استفاده کنید: **Shallow Copy** و **Deep Copy**. این دو روش نحوه کپی‌برداری از اشیاء و زیر‌اشیاء (nested objects) را مشخص می‌کنند. بیایید این دو روش را با جزئیات بیشتر بررسی کنیم و مثال‌هایی برای هر کدام ارائه دهیم.
+
+### Shallow Copy
+
+**تعریف:**
+- Shallow Copy یک کپی سطحی از شیء ایجاد می‌کند. در این روش، یک کپی جدید از شیء ایجاد می‌شود، اما هر مرجع (reference) به اشیاء دیگر همچنان به همان اشیاء اشاره می‌کند. این بدان معناست که تغییر در زیر‌اشیاء در کپی اصلی و کپی سطحی منعکس می‌شود.
+
+**مثال:**
+
+</div>
+
+```java
+import java.util.Arrays;
+
+class ShallowCopyExample implements Cloneable {
+    int[] data;
+
+    public ShallowCopyExample(int[] data) {
+        this.data = data;
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone(); // Shallow copy
+    }
+
+    public static void main(String[] args) throws CloneNotSupportedException {
+        int[] data = {1, 2, 3};
+        ShallowCopyExample original = new ShallowCopyExample(data);
+        ShallowCopyExample shallowCopy = (ShallowCopyExample) original.clone();
+
+        System.out.println("Original data: " + Arrays.toString(original.data));
+        System.out.println("Shallow copy data: " + Arrays.toString(shallowCopy.data));
+
+        // Modify the data array
+        original.data[0] = 10;
+
+        System.out.println("After modification:");
+        System.out.println("Original data: " + Arrays.toString(original.data));
+        System.out.println("Shallow copy data: " + Arrays.toString(shallowCopy.data));
+    }
+}
+```
+
+<div dir="rtl">
+
+**خروجی:**
+
+</div>
+
+```
+Original data: [1, 2, 3]
+Shallow copy data: [1, 2, 3]
+After modification:
+Original data: [10, 2, 3]
+Shallow copy data: [10, 2, 3]
+```
+
+<div dir="rtl">
+
+
+در این مثال، تغییر در آرایه `data` در شیء اصلی نیز در کپی سطحی منعکس می‌شود، زیرا هر دو به همان آرایه اشاره می‌کنند.
+
+### Deep Copy
+
+**تعریف:**
+- Deep Copy یک کپی عمیق از شیء ایجاد می‌کند. در این روش، یک کپی جدید از شیء و تمام زیر‌اشیاء ایجاد می‌شود. بنابراین، تغییرات در زیر‌اشیاء در کپی اصلی و کپی عمیق مستقل از یکدیگر هستند.
+
+**مثال:**
+
+</div>
+
+```java
+import java.util.Arrays;
+
+class DeepCopyExample implements Cloneable {
+    int[] data;
+
+    public DeepCopyExample(int[] data) {
+        this.data = data;
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        // Perform a deep copy
+        int[] clonedData = new int[data.length];
+        System.arraycopy(data, 0, clonedData, 0, data.length);
+        return new DeepCopyExample(clonedData);
+    }
+
+    public static void main(String[] args) throws CloneNotSupportedException {
+        int[] data = {1, 2, 3};
+        DeepCopyExample original = new DeepCopyExample(data);
+        DeepCopyExample deepCopy = (DeepCopyExample) original.clone();
+
+        System.out.println("Original data: " + Arrays.toString(original.data));
+        System.out.println("Deep copy data: " + Arrays.toString(deepCopy.data));
+
+        // Modify the data array
+        original.data[0] = 10;
+
+        System.out.println("After modification:");
+        System.out.println("Original data: " + Arrays.toString(original.data));
+        System.out.println("Deep copy data: " + Arrays.toString(deepCopy.data));
+    }
+}
+```
+
+<div dir="rtl">
+
+**خروجی:**
+
+</div>
+
+```
+Original data: [1, 2, 3]
+Deep copy data: [1, 2, 3]
+After modification:
+Original data: [10, 2, 3]
+Deep copy data: [1, 2, 3]
+```
+
+<div dir="rtl">
+
+
+
+در این مثال، تغییر در آرایه `data` در شیء اصلی هیچ تاثیری بر روی کپی عمیق ندارد، زیرا آرایه‌ای جدید برای کپی عمیق ایجاد شده است.
+
+### مقایسه Deep Copy و Shallow Copy
+
+- **Shallow Copy:**
+   - کپی سطحی از شیء.
+   - مراجع به زیر‌اشیاء همچنان به همان اشیاء اصلی اشاره می‌کنند.
+   - تغییرات در زیر‌اشیاء در کپی اصلی و کپی سطحی منعکس می‌شوند.
+   - سریع‌تر و کمتر مصرف‌کننده حافظه است.
+
+- **Deep Copy:**
+   - کپی عمیق از شیء.
+   - کپی‌های جدید از زیر‌اشیاء ایجاد می‌شود.
+   - تغییرات در زیر‌اشیاء در کپی اصلی و کپی عمیق مستقل هستند.
+   - کندتر و مصرف‌کننده حافظه بیشتری است.
+
+### نتیجه‌گیری
+
+- **Shallow Copy:** مناسب برای مواقعی که نیازی به تغییرات مستقل در زیر‌اشیاء نیست.
+- **Deep Copy:** مناسب برای مواقعی که نیاز به تغییرات مستقل در زیر‌اشیاء دارید و نمی‌خواهید کپی اصلی و کپی جدید تاثیری بر روی یکدیگر داشته باشند.
+
+با درک این مفاهیم، می‌توانید بسته به نیاز خود تصمیم بگیرید که از کدام روش کپی‌برداری استفاده کنید.
+</div>
+
+</details>
+
+<details>
+<summary dir="rtl"> 
+13) copmostion چیه ، با مثال؟
+</summary>
+
+<div dir="rtl">
+
+**تعریف:**
+ترکیب (Composition) یک روش طراحی شی‌ءگرا است که در آن یک کلاس شامل اشیاء دیگر به عنوان اعضای خود است. در ترکیب، به جای استفاده از ارث‌بری (Inheritance) برای اشتراک‌گذاری رفتار بین کلاس‌ها، یک کلاس با داشتن اشیاء از کلاس‌های دیگر رفتار مورد نیاز را به دست می‌آورد. این روش انعطاف‌پذیری بیشتری نسبت به ارث‌بری ارائه می‌دهد و به باز استفاده‌ی مجدد کد کمک می‌کند.
+
+### مزایای ترکیب
+
+1. **قابلیت استفاده مجدد کد:** می‌توانید رفتارهای مختلف را در کلاس‌های جداگانه تعریف کنید و آن‌ها را در کلاس‌های دیگر استفاده کنید.
+2. **کاهش وابستگی:** تغییرات در یک کلاس تأثیر کمتری بر روی کلاس‌های دیگر دارد.
+3. **انعطاف‌پذیری:** می‌توانید رفتارهای مختلف را به اشیاء در زمان اجرا اضافه یا تغییر دهید.
+
+### مثال از ترکیب
+
+فرض کنید می‌خواهیم یک سیستم ساده برای مدیریت خودروها ایجاد کنیم. به جای ارث‌بری از کلاس‌های مختلف، از ترکیب استفاده می‌کنیم.
+
+**مثال:**
+
+</div>
+
+```java
+// کلاس Engine که رفتار موتور را تعریف می‌کند
+class Engine {
+    public void start() {
+        System.out.println("Engine started.");
+    }
+
+    public void stop() {
+        System.out.println("Engine stopped.");
+    }
+}
+
+// کلاس Transmission که رفتار جعبه دنده را تعریف می‌کند
+class Transmission {
+    public void shiftUp() {
+        System.out.println("Gear shifted up.");
+    }
+
+    public void shiftDown() {
+        System.out.println("Gear shifted down.");
+    }
+}
+
+// کلاس Car که از ترکیب استفاده می‌کند تا رفتارهای Engine و Transmission را به دست آورد
+class Car {
+    private Engine engine;
+    private Transmission transmission;
+
+    public Car() {
+        this.engine = new Engine();
+        this.transmission = new Transmission();
+    }
+
+    public void startCar() {
+        engine.start();
+        transmission.shiftUp();
+    }
+
+    public void stopCar() {
+        transmission.shiftDown();
+        engine.stop();
+    }
+}
+
+// کلاس اصلی برای تست کردن سیستم
+public class CompositionExample {
+    public static void main(String[] args) {
+        Car car = new Car();
+        car.startCar(); // خروجی: Engine started. Gear shifted up.
+        car.stopCar();  // خروجی: Gear shifted down. Engine stopped.
+    }
+}
+```
+
+<div dir="rtl">
+
+### توضیحات مثال:
+
+1. **کلاس‌های Engine و Transmission:**
+   - این کلاس‌ها رفتارهای خاصی را تعریف می‌کنند. `Engine` رفتارهای مربوط به موتور و `Transmission` رفتارهای مربوط به جعبه دنده را تعریف می‌کند.
+
+2. **کلاس Car:**
+   - این کلاس از ترکیب استفاده می‌کند و شامل اشیاء از کلاس‌های `Engine` و `Transmission` است. با این روش، `Car` می‌تواند از رفتارهای تعریف شده در این کلاس‌ها استفاده کند بدون اینکه از آن‌ها ارث‌بری کند.
+
+3. **متدهای startCar و stopCar:**
+   - این متدها از اشیاء `engine` و `transmission` برای اجرای رفتارهای مربوط به روشن و خاموش کردن خودرو استفاده می‌کنند.
+
+### نتیجه‌گیری
+
+ترکیب یک روش طراحی قدرتمند است که به شما اجازه می‌دهد تا رفتارهای مختلف را در کلاس‌های جداگانه تعریف کنید و آن‌ها را به کلاس‌های دیگر اضافه کنید. این روش انعطاف‌پذیری بیشتری نسبت به ارث‌بری ارائه می‌دهد و به کاهش وابستگی‌ها و افزایش استفاده مجدد از کد کمک می‌کند.
+
+</div>
+
+</details>
+
+<details>
+
+<summary dir="rtl"> 
+14) انواع exception ؟
+</summary>
+
+<div dir="rtl">
+
+در جاوا، استثناها (Exceptions) به دو دسته کلی تقسیم می‌شوند: استثناهای بررسی‌شده (Checked Exceptions) و استثناهای بررسی‌نشده (Unchecked Exceptions). هر یک از این دسته‌ها شامل انواع مختلفی از استثناها هستند که برای مدیریت خطاها و شرایط غیرعادی در برنامه‌ها استفاده می‌شوند.
+
+### 1. Checked Exceptions (استثناهای بررسی‌شده)
+
+Checked Exceptions استثناهایی هستند که در زمان کامپایل بررسی می‌شوند. برنامه‌نویس باید این نوع استثناها را به صورت صریح مدیریت کند، یعنی باید از `try-catch` استفاده کند یا متد مربوطه را با کلمه کلیدی `throws` علامت‌گذاری کند.
+
+**مثال‌های Checked Exceptions:**
+- **IOException:** این استثنا زمانی رخ می‌دهد که یک عملیات ورودی/خروجی دچار مشکل می‌شود.
+- **SQLException:** این استثنا زمانی رخ می‌دهد که یک خطا در دسترسی به پایگاه داده رخ می‌دهد.
+- **ClassNotFoundException:** این استثنا زمانی رخ می‌دهد که کلاس مورد نظر در زمان اجرا یافت نشود.
+
+**مثال:**
+
+</div>
+
+```java
+import java.io.*;
+
+public class CheckedExceptionExample {
+    public static void main(String[] args) {
+        try {
+            FileReader file = new FileReader("test.txt");
+            BufferedReader fileInput = new BufferedReader(file);
+
+            // خواندن و نمایش اولین خط از فایل
+            System.out.println(fileInput.readLine());
+            fileInput.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+<div dir="rtl">
+
+
+### 2. Unchecked Exceptions (استثناهای بررسی‌نشده)
+
+Unchecked Exceptions استثناهایی هستند که در زمان اجرا رخ می‌دهند و نیازی به مدیریت صریح در زمان کامپایل ندارند. این استثناها از کلاس `RuntimeException` مشتق می‌شوند.
+
+**مثال‌های Unchecked Exceptions:**
+- **NullPointerException:** این استثنا زمانی رخ می‌دهد که به یک مرجع تهی (null reference) دسترسی پیدا کنید.
+- **ArrayIndexOutOfBoundsException:** این استثنا زمانی رخ می‌دهد که به یک ایندکس خارج از محدوده یک آرایه دسترسی پیدا کنید.
+- **ArithmeticException:** این استثنا زمانی رخ می‌دهد که یک خطای ریاضی مانند تقسیم بر صفر رخ دهد.
+
+**مثال:**
+
+</div>
+
+```java
+public class UncheckedExceptionExample {
+    public static void main(String[] args) {
+        try {
+            int[] numbers = {1, 2, 3};
+            System.out.println(numbers[5]); // خطای ArrayIndexOutOfBoundsException
+        } catch (ArrayIndexOutOfBoundsException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            String str = null;
+            System.out.println(str.length()); // خطای NullPointerException
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+<div dir="rtl">
+
+
+### 3. Error (خطاها)
+
+خطاها شرایط غیرعادی جدی هستند که معمولاً توسط برنامه قابل بازیابی نیستند. این خطاها از کلاس `Error` مشتق می‌شوند و نیازی به مدیریت صریح ندارند. خطاها معمولاً توسط JVM پرتاب می‌شوند.
+
+**مثال‌های Error:**
+- **OutOfMemoryError:** این خطا زمانی رخ می‌دهد که JVM نتواند حافظه بیشتری اختصاص دهد.
+- **StackOverflowError:** این خطا زمانی رخ می‌دهد که پشته‌ی فراخوانی متدها پر شود.
+
+**مثال:**
+
+</div>
+
+```java
+public class ErrorExample {
+    public static void main(String[] args) {
+        try {
+            recursiveMethod();
+        } catch (StackOverflowError e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void recursiveMethod() {
+        // فراخوانی بازگشتی برای ایجاد خطای StackOverflowError
+        recursiveMethod();
+    }
+}
+```
+
+<div dir="rtl">
+
+
+
+### نتیجه‌گیری
+
+در جاوا، مدیریت استثناها بخش مهمی از برنامه‌نویسی است که به برنامه‌نویسان اجازه می‌دهد تا خطاها و شرایط غیرعادی را به صورت مؤثری مدیریت کنند. درک تفاوت بین Checked Exceptions، Unchecked Exceptions، و Errors و استفاده صحیح از هر یک از آن‌ها به شما کمک می‌کند تا برنامه‌های پایدارتر و قابل اعتمادتری ایجاد کنید.
+
+</div>
+
+</details>
+
+<details>
+<summary dir="rtl"> 
+15) memory leak چطور اتفاق میفته ؟
+</summary>
+
+<div dir="rtl">
+
+**Memory Leak** (نشت حافظه) زمانی اتفاق می‌افتد که برنامه حافظه‌ای را که دیگر مورد استفاده قرار نمی‌دهد، آزاد نمی‌کند. در نتیجه، حافظه به طور مستمر کاهش می‌یابد و در نهایت ممکن است برنامه با کمبود حافظه مواجه شود. در جاوا، مدیریت حافظه توسط Garbage Collector انجام می‌شود، اما همچنان ممکن است نشت حافظه رخ دهد.
+
+### چگونه Memory Leak اتفاق می‌افتد؟
+
+در جاوا، Memory Leak معمولاً به دلایل زیر رخ می‌دهد:
+
+1. **object reference غیرضروری :**
+   - وقتی اشیاءی که دیگر نیازی به آن‌ها نیست، همچنان توسط مرجع‌های فعال نگه داشته می‌شوند، Garbage Collector نمی‌تواند آن‌ها را بازیابی کند.
+
+2. **استفاده نادرست از مجموعه‌ها (Collections):**
+   - اضافه کردن اشیاء به مجموعه‌ها (مانند `List`, `Set`, `Map`) بدون حذف آن‌ها زمانی که دیگر نیازی به آن‌ها نیست، می‌تواند منجر به نشت حافظه شود.
+
+3. **مراجع استاتیک (Static References):**
+   - مراجع استاتیک تا زمانی که کلاس بارگذاری شده است، در حافظه باقی می‌مانند. اگر اشیاءی به صورت استاتیک مرجع‌دهی شوند و دیگر استفاده نشوند، حافظه آن‌ها آزاد نخواهد شد.
+
+4. **شنوندگان و رسیورها (Listeners and Callbacks):**
+   - ثبت شنوندگان یا رسیورها بدون لغو ثبت آن‌ها می‌تواند باعث نگه‌داشتن مراجع غیرضروری شود.
+
+### مثال‌های Memory Leak
+
+**مثال 1: object reference غیرضروری**
+
+</div>
+
+```java
+import java.util.ArrayList;
+import java.util.List;
+
+public class MemoryLeakExample {
+    private List<String> dataList = new ArrayList<>();
+
+    public void addData() {
+        for (int i = 0; i < 100000; i++) {
+            dataList.add("Data " + i);
+        }
+    }
+
+    public void clearData() {
+        // این خط از کد مراجع به اشیاء را آزاد نمی‌کند
+        dataList.clear(); 
+        // dataList = null; // راه‌حل درست: آزاد کردن مرجع
+    }
+
+    public static void main(String[] args) {
+        MemoryLeakExample example = new MemoryLeakExample();
+        example.addData();
+        example.clearData();
+    }
+}
+```
+
+<div dir="rtl">
+
+**مثال 2: استفاده نادرست از collection**
+
+</div>
+
+```java
+import java.util.HashMap;
+import java.util.Map;
+
+public class MemoryLeakWithMap {
+    private Map<Integer, String> map = new HashMap<>();
+
+    public void addData() {
+        for (int i = 0; i < 100000; i++) {
+            map.put(i, "Data " + i);
+        }
+    }
+
+    public void clearData() {
+        // این خط از کد مراجع به اشیاء را آزاد نمی‌کند
+        map.clear(); 
+        // map = null; // راه‌حل درست: آزاد کردن مرجع
+    }
+
+    public static void main(String[] args) {
+        MemoryLeakWithMap example = new MemoryLeakWithMap();
+        example.addData();
+        example.clearData();
+    }
+}
+```
+
+<div dir="rtl">
+
+
+**مثال 3: مراجع استاتیک**
+
+</div>
+
+```java
+public class StaticReferenceExample {
+    private static List<String> dataList = new ArrayList<>();
+
+    public static void addData() {
+        for (int i = 0; i < 100000; i++) {
+            dataList.add("Data " + i);
+        }
+    }
+
+    public static void clearData() {
+        // این خط از کد مراجع به اشیاء را آزاد نمی‌کند
+        dataList.clear(); 
+        // dataList = null; // راه‌حل درست: آزاد کردن مرجع
+    }
+
+    public static void main(String[] args) {
+        addData();
+        clearData();
+    }
+}
+```
+
+<div dir="rtl">
+
+**مثال 4: Listeners and Callbacks**
+
+</div>
+
+```java
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+
+public class ListenerLeakExample extends JFrame {
+    public ListenerLeakExample() {
+        JButton button = new JButton("Click me");
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Button clicked");
+            }
+        });
+        add(button);
+        setSize(200, 200);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        ListenerLeakExample example = new ListenerLeakExample();
+        // example.dispose(); // راه‌حل درست: حذف شنوندگان قبل از بستن
+    }
+}
+```
+
+<div dir="rtl">
+
+
+
+### چگونه از Memory Leak جلوگیری کنیم؟
+
+1. **استفاده از ابزارهای پروفایلینگ (Profiling):**
+   - ابزارهایی مانند VisualVM، YourKit، JProfiler می‌توانند برای شناسایی نشت‌های حافظه استفاده شوند.
+
+2. **مراجع ضعیف (Weak References):**
+   - استفاده از `WeakReference` برای نگه‌داشتن اشیاءی که می‌توانند بازیابی شوند.
+
+3. **مدیریت درست مجموعه‌ها:**
+   - اطمینان حاصل کنید که اشیاءی که دیگر نیازی به آن‌ها نیست از مجموعه‌ها حذف می‌شوند.
+
+4. **حذف شنوندگان:**
+   - اطمینان حاصل کنید که شنوندگان و رسیورها به درستی ثبت و لغو ثبت می‌شوند.
+
+5. **بررسی کد برای مراجع استاتیک:**
+   - از مراجع استاتیک با احتیاط استفاده کنید و مطمئن شوید که زمانی که دیگر نیازی به آن‌ها نیست، آزاد می‌شوند.
+
+### نتیجه‌گیری
+
+نشت حافظه یک مشکل جدی است که می‌تواند منجر به کاهش کارایی و در نهایت شکست برنامه شود. با درک نحوه وقوع نشت‌های حافظه و استفاده از تکنیک‌های مناسب برای جلوگیری از آن‌ها، می‌توانید برنامه‌های پایدارتر و کارآمدتری ایجاد کنید.
+</div>
+
+</details>
+
 
 ## String 
 
@@ -1527,7 +2156,7 @@ Garbage Collector در جاوا از یک معماری چند نسلی استف�
 
 <details>
 <summary dir="rtl"> 
-12) تفاوت string با string buffer و string builder ؟
+16) تفاوت string با string buffer و string builder ؟
 </summary>
 
 <div dir="rtl">
@@ -1622,7 +2251,7 @@ System.out.println(sb.toString()); // خروجی: Hello World
 
 <details>
 <summary dir="rtl"> 
-13) 	تفاوت new کردن string با literal(مستقیم)  تعریف کردن اون ؟
+17) 	تفاوت new کردن string با literal(مستقیم)  تعریف کردن اون ؟
 </summary>
 
 <div dir="rtl">
@@ -1696,7 +2325,7 @@ System.out.println(str3.equals(str4)); // خروجی: true
 
 <details>
 <summary dir="rtl"> 
-14)	String pool چیه؟	هدف از ساخت string pool چی بوده ؟
+18)	String pool چیه؟	هدف از ساخت string pool چی بوده ؟
 </summary>
 
 <div dir="rtl">
@@ -1788,7 +2417,7 @@ System.out.println(str1 == str6); // خروجی: true
 <details>
 
 <summary dir="rtl"> 
-15) تعریف collection ؟
+19) تعریف collection ؟
 </summary>
 
 <div dir="rtl">
@@ -1930,7 +2559,7 @@ public class Main {
 
 <details>
 <summary dir="rtl"> 
-16) تفاوت array با arrayList ؟
+20) تفاوت array با arrayList ؟
 </summary>
 
 <div dir="rtl">
@@ -2110,7 +2739,7 @@ public class ArrayListExample {
 
 <details>
 <summary dir="rtl"> 
-17) متد unmodife توی ایرنتفیس collection ؟
+21) متد unmodife توی ایرنتفیس collection ؟
 </summary>
 
 <div dir="rtl">
@@ -2168,7 +2797,7 @@ public class Main {
 
 <details>
 <summary dir="rtl"> 
-18) تفاوت map با flatmap ؟
+22) تفاوت map با flatmap ؟
 </summary>
 
 <div dir="rtl">
@@ -2281,4 +2910,289 @@ List<Integer> flatList = nestedNumbers.stream()
 
 این دو متد ابزارهای قدرتمندی در جاوا برای پردازش داده‌ها در استریم‌ها هستند و با استفاده مناسب از آن‌ها می‌توان کدهای تمیزتر و کارآمدتری نوشت.
 </div>
+</details>
+
+<details>
+<summary dir="rtl"> 
+23) چطور یه لیست رو با stream فیلتر کنیم ؟
+</summary>
+
+<div dir="rtl">
+
+برای فیلتر کردن یک لیست با استفاده از `Stream` در جاوا، می‌توانید از متد `filter` استفاده کنید. `Stream` یک API قدرتمند برای پردازش مجموعه‌های داده به صورت دکلارتیو است و به شما اجازه می‌دهد تا عملیات‌هایی مانند فیلتر کردن، نقشه‌برداری و کاهش را به سادگی انجام دهید.
+
+### مثال: فیلتر کردن یک لیست با استفاده از Stream
+
+فرض کنید یک لیست از اعداد صحیح دارید و می‌خواهید فقط اعداد زوج را از این لیست فیلتر کنید.
+
+</div>
+
+```java
+import java.util.List;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+public class StreamFilterExample {
+    public static void main(String[] args) {
+        // ایجاد لیستی از اعداد
+        List<Integer> numbers = new ArrayList<>();
+        for (int i = 1; i <= 10; i++) {
+            numbers.add(i);
+        }
+
+        // فیلتر کردن اعداد زوج با استفاده از Stream
+        List<Integer> evenNumbers = numbers.stream()
+                                           .filter(n -> n % 2 == 0)
+                                           .collect(Collectors.toList());
+
+        // نمایش لیست فیلتر شده
+        System.out.println(evenNumbers); // خروجی: [2, 4, 6, 8, 10]
+    }
+}
+```
+
+<div dir="rtl">
+
+### توضیح کد:
+
+1. **ایجاد لیست:**
+   - یک لیست از اعداد صحیح از 1 تا 10 ایجاد می‌شود.
+
+2. **ایجاد Stream و فیلتر کردن:**
+   - متد `stream()` برای ایجاد یک استریم از لیست اعداد استفاده می‌شود.
+   - متد `filter` یک شرط برای فیلتر کردن اعداد زوج (`n -> n % 2 == 0`) اعمال می‌کند.
+   - متد `collect` برای جمع‌آوری نتایج فیلتر شده به یک لیست استفاده می‌شود.
+
+3. **نمایش لیست فیلتر شده:**
+   - لیست اعداد زوج فیلتر شده با استفاده از `System.out.println` نمایش داده می‌شود.
+
+### فیلتر کردن یک لیست از اشیاء:
+
+فرض کنید یک لیست از اشیاء `Person` دارید و می‌خواهید فقط اشخاصی که سن آن‌ها بیشتر از 18 سال است را فیلتر کنید.
+
+**مرحله 1: تعریف کلاس Person**
+
+</div>
+
+```java
+class Person {
+    private String name;
+    private int age;
+
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    @Override
+    public String toString() {
+        return name + " (" + age + ")";
+    }
+}
+```
+
+<div dir="rtl">
+
+**مرحله 2: ایجاد و فیلتر کردن لیست از اشیاء Person**
+
+</div>
+
+```java
+import java.util.List;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
+
+public class StreamFilterExample {
+    public static void main(String[] args) {
+        // ایجاد لیستی از اشخاص
+        List<Person> people = new ArrayList<>();
+        people.add(new Person("John", 20));
+        people.add(new Person("Jane", 15));
+        people.add(new Person("Tom", 25));
+        people.add(new Person("Lucy", 10));
+
+        // فیلتر کردن اشخاصی که سن آن‌ها بیشتر از 18 سال است
+        List<Person> adults = people.stream()
+                                    .filter(person -> person.getAge() > 18)
+                                    .collect(Collectors.toList());
+
+        // نمایش لیست فیلتر شده
+        adults.forEach(System.out::println); // خروجی: John (20), Tom (25)
+    }
+}
+```
+
+<div dir="rtl">
+
+### توضیح کد:
+
+1. **تعریف کلاس Person:**
+   - کلاس `Person` با دو فیلد `name` و `age` تعریف شده است.
+   - متدهای سازنده، getter و `toString` برای کلاس `Person` تعریف شده‌اند.
+
+2. **ایجاد لیست:**
+   - یک لیست از اشیاء `Person` ایجاد می‌شود.
+
+3. **ایجاد Stream و فیلتر کردن:**
+   - متد `stream()` برای ایجاد یک استریم از لیست اشخاص استفاده می‌شود.
+   - متد `filter` یک شرط برای فیلتر کردن اشخاصی که سن آن‌ها بیشتر از 18 سال است (`person -> person.getAge() > 18`) اعمال می‌کند.
+   - متد `collect` برای جمع‌آوری نتایج فیلتر شده به یک لیست استفاده می‌شود.
+
+4. **نمایش لیست فیلتر شده:**
+   - لیست اشخاص فیلتر شده با استفاده از `forEach(System.out::println)` نمایش داده می‌شود.
+
+### نتیجه‌گیری
+
+استفاده از `Stream` و متد `filter` در جاوا، روش قدرتمند و کارآمدی برای پردازش و فیلتر کردن لیست‌ها است. با استفاده از این ابزارها، می‌توانید کدهای خواناتر و قابل نگهداری‌تری بنویسید.
+
+</div>
+
+</details>
+
+<details>
+<summary dir="rtl"> 
+24) consumer , suplier در java ؟
+</summary>
+
+<div dir="rtl">
+در جاوا، `Consumer` و `Supplier` دو نوع از توابعی هستند که در کتابخانه `java.util.function` معرفی شده‌اند. این توابع به عنوان بخشی از API توابعی جاوا (Java Functional API) ارائه شده‌اند و برای کار با برنامه‌نویسی تابعی (functional programming) مورد استفاده قرار می‌گیرند.
+
+### 1. `Consumer` در جاوا
+
+**تعریف:**
+- `Consumer` یک رابط تابعی (Functional Interface) است که یک ورودی را می‌پذیرد و هیچ خروجی‌ای تولید نمی‌کند. این رابط معمولاً برای انجام عملیات بر روی ورودی استفاده می‌شود، مانند چاپ کردن، ثبت لاگ، یا اعمال تغییرات بر روی یک شیء.
+
+**ساختار:**
+
+</div>
+
+```java
+@FunctionalInterface
+public interface Consumer<T> {
+    void accept(T t);
+}
+```
+
+<div dir="rtl">
+
+**مثال:**
+در این مثال، یک `Consumer` تعریف شده است که یک رشته را چاپ می‌کند:
+
+</div>
+
+```java
+import java.util.function.Consumer;
+
+public class ConsumerExample {
+    public static void main(String[] args) {
+        Consumer<String> printConsumer = (str) -> System.out.println(str);
+        printConsumer.accept("Hello, Consumer!"); // خروجی: Hello, Consumer!
+    }
+}
+```
+
+<div dir="rtl">
+
+### 2. `Supplier` در جاوا
+
+**تعریف:**
+- `Supplier` یک رابط تابعی (Functional Interface) است که هیچ ورودی‌ای نمی‌پذیرد و یک خروجی تولید می‌کند. این رابط معمولاً برای تولید یا تأمین مقادیر استفاده می‌شود، مانند ایجاد یک شیء جدید، تولید مقادیر تصادفی، یا خواندن داده‌ها از یک منبع خارجی.
+
+**ساختار:**
+
+</div>
+
+```java
+@FunctionalInterface
+public interface Supplier<T> {
+    T get();
+}
+```
+
+<div dir="rtl">
+
+**مثال:**
+در این مثال، یک `Supplier` تعریف شده است که یک عدد تصادفی را تولید می‌کند:
+
+</div>
+
+```java
+import java.util.function.Supplier;
+import java.util.Random;
+
+public class SupplierExample {
+    public static void main(String[] args) {
+        Supplier<Integer> randomSupplier = () -> new Random().nextInt(100);
+        System.out.println("Random Number: " + randomSupplier.get()); // خروجی: عدد تصادفی بین 0 تا 99
+    }
+}
+```
+
+<div dir="rtl">
+
+### استفاده‌های کاربردی از `Consumer` و `Supplier`
+
+**مثال کاربردی با `Consumer`:**
+در این مثال، از `Consumer` برای چاپ تمام عناصر یک لیست استفاده می‌کنیم:
+
+</div>
+
+```java
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Consumer;
+
+public class ListConsumerExample {
+    public static void main(String[] args) {
+        List<String> names = Arrays.asList("John", "Jane", "Jack");
+        Consumer<String> printName = (name) -> System.out.println(name);
+
+        names.forEach(printName); // چاپ تمام نام‌ها
+    }
+}
+```
+
+<div dir="rtl">
+
+**مثال کاربردی با `Supplier`:**
+در این مثال، از `Supplier` برای تأمین مقادیر پیش‌فرض در یک برنامه استفاده می‌کنیم:
+
+</div>
+
+```java
+import java.util.function.Supplier;
+
+public class DefaultSupplierExample {
+    public static void main(String[] args) {
+        Supplier<String> defaultSupplier = () -> "Default Value";
+
+        String value = getValueOrDefault(null, defaultSupplier);
+        System.out.println("Value: " + value); // خروجی: Default Value
+    }
+
+    public static <T> T getValueOrDefault(T value, Supplier<T> defaultSupplier) {
+        return value != null ? value : defaultSupplier.get();
+    }
+}
+```
+
+<div dir="rtl">
+
+### نتیجه‌گیری
+
+- **Consumer:** برای انجام عملیات بر روی ورودی استفاده می‌شود و هیچ خروجی‌ای ندارد. مثال: چاپ کردن، ثبت لاگ.
+- **Supplier:** برای تولید یا تأمین مقادیر استفاده می‌شود و هیچ ورودی‌ای ندارد. مثال: تولید مقادیر تصادفی، تأمین مقادیر پیش‌فرض.
+
+هر دو `Consumer` و `Supplier` از ابزارهای قدرتمند برنامه‌نویسی تابعی در جاوا هستند که می‌توانند به بهبود خوانایی و نگهداری کد کمک کنند. با استفاده از این رابط‌های تابعی، می‌توانید کدهای انعطاف‌پذیرتر و قابل استفاده مجدد بنویسید.
+</div>
+
 </details>
