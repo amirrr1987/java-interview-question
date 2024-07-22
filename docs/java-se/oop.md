@@ -272,3 +272,91 @@ public class Main {
 ```
 
 در این مثال، `Dog` هم از یک کلاس انتزاعی (`Animal`) و هم از یک رابط (`Pet`) استفاده می‌کند، که نشان‌دهنده قدرت و انعطاف‌پذیری ترکیب این دو ویژگی در جاوا است.
+
+
+## Default method در interface در حالت multiple اگر متد یکسان باشه چه خطایی میده؟
+
+در جاوا، اگر یک کلاس از چندین رابط (interface) پیروی کند که دارای متدهای پیش‌فرض (default methods) با امضای یکسان باشند، یک تضاد به وجود می‌آید. این تضاد باید به طور صریح توسط کلاس حل شود، در غیر این صورت کامپایلر جاوا خطا می‌دهد.
+
+### خطا
+
+وقتی یک کلاس از چندین رابط پیروی می‌کند که هر کدام متد پیش‌فرض یکسانی دارند، کامپایلر خطای زیر را می‌دهد:
+```
+class X inherits unrelated defaults for method Y() from types A and B
+```
+
+### مثال
+
+برای توضیح این موضوع با یک مثال، بیایید دو رابط با متد پیش‌فرض یکسان و یک کلاس که از هر دو رابط پیروی می‌کند را بررسی کنیم:
+
+```java
+interface InterfaceA {
+    default void display() {
+        System.out.println("Display from InterfaceA");
+    }
+}
+
+interface InterfaceB {
+    default void display() {
+        System.out.println("Display from InterfaceB");
+    }
+}
+
+class MyClass implements InterfaceA, InterfaceB {
+    @Override
+    public void display() {
+        // باید تضاد را به طور صریح حل کنیم
+        InterfaceA.super.display(); // یا InterfaceB.super.display();
+    }
+
+    public static void main(String[] args) {
+        MyClass obj = new MyClass();
+        obj.display(); // باید تصمیم بگیریم کدام نمایش داده شود
+    }
+}
+```
+### توضیح
+
+1. **تعریف دو رابط با متد پیش‌فرض یکسان:**
+   - `InterfaceA` و `InterfaceB` هر دو دارای متد پیش‌فرض `display` هستند.
+
+2. **پیروی کلاس از هر دو رابط:**
+   - کلاس `MyClass` از هر دو رابط `InterfaceA` و `InterfaceB` پیروی می‌کند.
+
+3. **حل تضاد:**
+   - کلاس `MyClass` باید تضاد به وجود آمده را به طور صریح حل کند. این کار با استفاده از `InterfaceA.super.display()` یا `InterfaceB.super.display()` انجام می‌شود تا مشخص شود کدام نسخه از متد `display` فراخوانی شود.
+
+### حل تضاد
+
+هنگامی که با تضاد متدهای پیش‌فرض مواجه می‌شویم، باید به یکی از روش‌های زیر عمل کنیم:
+
+1. **بازنویسی متد:**
+   - متد را در کلاس پیاده‌سازی کرده و از یک نسخه خاص از رابط برای حل تضاد استفاده کنیم.
+
+مثال:
+
+```java
+class MyClass implements InterfaceA, InterfaceB {
+    @Override
+    public void display() {
+        InterfaceA.super.display(); // یا InterfaceB.super.display();
+    }
+}
+```
+2. **تعریف متد جدید:**
+   - می‌توانیم یک پیاده‌سازی جدید برای متد ارائه دهیم که از هیچ یک از نسخه‌های رابط استفاده نکند.
+
+مثال:
+
+```java
+class MyClass implements InterfaceA, InterfaceB {
+    @Override
+    public void display() {
+        System.out.println("Display from MyClass");
+    }
+}
+```
+### نتیجه‌گیری
+
+هنگامی که یک کلاس از چندین رابط با متد پیش‌فرض یکسان پیروی می‌کند، باید تضاد به وجود آمده را به طور صریح حل کنیم تا کامپایلر خطا ندهد. این کار معمولاً با بازنویسی متد و استفاده از `super` برای اشاره به متد مورد نظر در یکی از رابط‌ها انجام می‌شود.
+
