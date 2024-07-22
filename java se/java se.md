@@ -2791,7 +2791,7 @@ public class Main {
 </details>
 
 
-## stream
+## Stream
 
 ------------------------------
 
@@ -3064,6 +3064,7 @@ public class StreamFilterExample {
 </summary>
 
 <div dir="rtl">
+
 در جاوا، `Consumer` و `Supplier` دو نوع از توابعی هستند که در کتابخانه `java.util.function` معرفی شده‌اند. این توابع به عنوان بخشی از API توابعی جاوا (Java Functional API) ارائه شده‌اند و برای کار با برنامه‌نویسی تابعی (functional programming) مورد استفاده قرار می‌گیرند.
 
 ### 1. `Consumer` در جاوا
@@ -3193,6 +3194,198 @@ public class DefaultSupplierExample {
 - **Supplier:** برای تولید یا تأمین مقادیر استفاده می‌شود و هیچ ورودی‌ای ندارد. مثال: تولید مقادیر تصادفی، تأمین مقادیر پیش‌فرض.
 
 هر دو `Consumer` و `Supplier` از ابزارهای قدرتمند برنامه‌نویسی تابعی در جاوا هستند که می‌توانند به بهبود خوانایی و نگهداری کد کمک کنند. با استفاده از این رابط‌های تابعی، می‌توانید کدهای انعطاف‌پذیرتر و قابل استفاده مجدد بنویسید.
+</div>
+
+</details>
+
+<details>
+<summary dir="rtl"> 
+25) تفاوت comprable  و comprator ؟
+</summary>
+
+<div dir="rtl">
+
+در جاوا، `Comparable` و `Comparator` دو رابط (interface) هستند که برای مرتب‌سازی اشیاء استفاده می‌شوند. این دو رابط روش‌های متفاوتی برای تعریف ترتیب اشیاء ارائه می‌دهند و هر یک دارای کاربردها و مزایای خاص خود هستند.
+
+### `Comparable`
+
+**تعریف:**
+- `Comparable` یک رابط است که در بسته `java.lang` قرار دارد و تنها یک متد به نام `compareTo` دارد. این رابط برای تعیین ترتیب طبیعی اشیاء استفاده می‌شود.
+
+**ساختار:**
+
+</div>
+
+```java
+public interface Comparable<T> {
+    int compareTo(T o);
+}
+```
+<div dir="rtl">
+
+**نحوه استفاده:**
+- یک کلاس باید `Comparable` را پیاده‌سازی کند و متد `compareTo` را تعریف کند تا ترتیب طبیعی برای اشیاء آن کلاس مشخص شود.
+
+**مثال:**
+
+</div>
+
+```java
+public class Student implements Comparable<Student> {
+    private String name;
+    private int grade;
+
+    public Student(String name, int grade) {
+        this.name = name;
+        this.grade = grade;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getGrade() {
+        return grade;
+    }
+
+    @Override
+    public int compareTo(Student other) {
+        return Integer.compare(this.grade, other.grade);
+    }
+
+    @Override
+    public String toString() {
+        return name + " (" + grade + ")";
+    }
+
+    public static void main(String[] args) {
+        List<Student> students = new ArrayList<>();
+        students.add(new Student("John", 85));
+        students.add(new Student("Jane", 92));
+        students.add(new Student("Jack", 70));
+
+        Collections.sort(students);
+
+        for (Student s : students) {
+            System.out.println(s);
+        }
+    }
+}
+```
+<div dir="rtl">
+
+
+**خروجی:**
+
+</div>
+
+```
+Jack (70)
+John (85)
+Jane (92)
+```
+<div dir="rtl">
+
+### `Comparator`
+
+**تعریف:**
+- `Comparator` یک رابط است که در بسته `java.util` قرار دارد و شامل دو متد `compare` و `equals` (اختیاری) می‌باشد. این رابط برای تعیین ترتیب سفارشی اشیاء استفاده می‌شود.
+
+**ساختار:**
+
+</div>
+
+```java
+public interface Comparator<T> {
+    int compare(T o1, T o2);
+
+    boolean equals(Object obj);
+}
+```
+<div dir="rtl">
+
+**نحوه استفاده:**
+- `Comparator` برای ایجاد یک کلاس جداگانه یا یک شیء مستقل استفاده می‌شود که متد `compare` را پیاده‌سازی می‌کند تا ترتیب سفارشی بین اشیاء را مشخص کند.
+
+**مثال:**
+
+</div>
+
+```java
+import java.util.*;
+
+public class Student {
+    private String name;
+    private int grade;
+
+    public Student(String name, int grade) {
+        this.name = name;
+        this.grade = grade;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getGrade() {
+        return grade;
+    }
+
+    @Override
+    public String toString() {
+        return name + " (" + grade + ")";
+    }
+
+    public static void main(String[] args) {
+        List<Student> students = new ArrayList<>();
+        students.add(new Student("John", 85));
+        students.add(new Student("Jane", 92));
+        students.add(new Student("Jack", 70));
+
+        // استفاده از Comparator برای مرتب‌سازی بر اساس نام
+        Collections.sort(students, new Comparator<Student>() {
+            @Override
+            public int compare(Student s1, Student s2) {
+                return s1.getName().compareTo(s2.getName());
+            }
+        });
+
+        for (Student s : students) {
+            System.out.println(s);
+        }
+    }
+}
+```
+<div dir="rtl">
+
+**خروجی:**
+
+</div>
+
+```
+Jack (70)
+Jane (92)
+John (85)
+```
+<div dir="rtl">
+
+### تفاوت‌های کلیدی بین `Comparable` و `Comparator`
+</div>
+
+<div>
+1-Sometimes we can’t modify the source code of the class whose objects we want to sort, thus making the use of Comparable impossible
+<br/>
+2-Using Comparators allows us to avoid adding additional code to our domain classes
+<br/>
+3-We can define multiple different comparison strategies, which isn’t possible when using Comparable
+</div>
+
+<div dir="rtl">
+1-گاهی اوقات نمی‌توانیم کد منبع کلاسی را که می‌خواهیم اشیاء آن را مرتب کنیم، تغییر دهیم، بنابراین استفاده از Comparable غیرممکن می‌شود.
+<br/>
+2-استفاده از Comparators به ما این امکان را می‌دهد که از اضافه کردن کد اضافی به کلاس‌های دامنه‌مان جلوگیری کنیم.
+<br/>
+3-می‌توانیم چندین استراتژی مقایسه متفاوت تعریف کنیم که این کار هنگام استفاده از Comparable ممکن نیست.
 </div>
 
 </details>
