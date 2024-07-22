@@ -102,3 +102,173 @@
         myCat.makeSound(); // Meow
     }
 ```
+
+## تفاوت abstarct با interface
+
+در جاوا، کلاس‌های انتزاعی (abstract classes) و رابط‌ها (interfaces) دو روش مهم برای تعریف قراردادها و رفتارهای مشترک بین کلاس‌ها هستند. با این حال، هر یک از این دو ویژگی کاربردها و محدودیت‌های خاص خود را دارند. در ادامه، تفاوت‌های اصلی بین آن‌ها را بررسی می‌کنیم:
+
+### کلاس انتزاعی (Abstract Class)
+
+1. **تعریف:**
+    - یک کلاس انتزاعی می‌تواند شامل متدهای انتزاعی (بدون پیاده‌سازی) و متدهای معمولی (با پیاده‌سازی) باشد.
+
+2. **ارث‌بری:**
+    - یک کلاس می‌تواند فقط از یک کلاس انتزاعی ارث‌بری کند (single inheritance).
+
+3. **سازنده‌ها:**
+    - یک کلاس انتزاعی می‌تواند سازنده داشته باشد و این سازنده‌ها می‌توانند برای مقداردهی اولیه اشیاء در کلاس‌های فرزند استفاده شوند.
+
+4. **متغیرها:**
+    - یک کلاس انتزاعی می‌تواند متغیرهای نمونه (instance variables) داشته باشد.
+
+مثال:
+
+```java
+abstract class Animal {
+    String name;
+
+    Animal(String name) {
+        this.name = name;
+    }
+
+    abstract void makeSound();
+
+    void eat() {
+        System.out.println(name + " is eating");
+    }
+}
+
+class Dog extends Animal {
+    Dog(String name) {
+        super(name);
+    }
+
+    @Override
+    void makeSound() {
+        System.out.println("Woof");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Dog dog = new Dog("Buddy");
+        dog.makeSound(); // Woof
+        dog.eat();       // Buddy is eating
+    }
+}
+```
+
+### رابط (Interface)
+
+1. **تعریف:**
+    - یک رابط فقط می‌تواند شامل متدهای انتزاعی (بدون پیاده‌سازی) باشد. البته، از جاوا 8 به بعد، رابط‌ها می‌توانند متدهای پیش‌فرض (default methods) و استاتیک (static methods) نیز داشته باشند که دارای پیاده‌سازی هستند.
+
+2. **ارث‌بری:**
+    - یک کلاس می‌تواند از چندین رابط پیروی کند (multiple inheritance).
+
+3. **سازنده‌ها:**
+    - یک رابط نمی‌تواند سازنده داشته باشد.
+
+4. **متغیرها:**
+    - تمام متغیرهای درون یک رابط به صورت پیش‌فرض `public`, `static` و `final` هستند.
+
+مثال:
+
+```java
+interface Animal {
+    void makeSound();
+
+    default void eat() {
+        System.out.println("Animal is eating");
+    }
+}
+
+class Dog implements Animal {
+    @Override
+    public void makeSound() {
+        System.out.println("Woof");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Dog dog = new Dog();
+        dog.makeSound(); // Woof
+        dog.eat();       // Animal is eating
+    }
+}
+```
+
+### تفاوت‌های کلیدی
+
+1. **تعداد ارث‌بری:**
+    - **Abstract Class:** فقط یک کلاس انتزاعی می‌تواند به ارث برده شود.
+    - **Interface:** یک کلاس می‌تواند از چندین رابط پیروی کند.
+
+2. **نوع متدها:**
+    - **Abstract Class:** می‌تواند شامل متدهای انتزاعی و معمولی باشد.
+    - **Interface:** تا جاوا 7، فقط شامل متدهای انتزاعی بود. از جاوا 8 به بعد، می‌تواند شامل متدهای پیش‌فرض و استاتیک نیز باشد.
+
+3. **نوع متغیرها:**
+    - **Abstract Class:** می‌تواند شامل متغیرهای نمونه و استاتیک باشد.
+    - **Interface:** فقط شامل متغیرهای `public`, `static`, `final` است.
+
+4. **کاربرد:**
+    - **Abstract Class:** برای مدل‌سازی یک مفهوم عمومی‌تر که ممکن است دارای پیاده‌سازی پیش‌فرض برخی از متدها باشد.
+    - **Interface:** برای تعریف قراردادهای رفتار که هر کلاس می‌تواند پیاده‌سازی‌های متفاوتی از آن‌ها ارائه دهد.
+
+### مثال ترکیبی
+
+برای درک بهتر تفاوت‌ها، می‌توانیم یک مثال ترکیبی بیاوریم که هر دو کلاس انتزاعی و رابط را به کار می‌گیرد:
+
+```java
+abstract class Animal {
+    String name;
+
+    Animal(String name) {
+        this.name = name;
+    }
+
+    abstract void makeSound();
+
+    void sleep() {
+        System.out.println(name + " is sleeping");
+    }
+}
+
+interface Pet {
+    void play();
+
+    default void eat() {
+        System.out.println("Pet is eating");
+    }
+}
+
+class Dog extends Animal implements Pet {
+    Dog(String name) {
+        super(name);
+    }
+
+    @Override
+    void makeSound() {
+        System.out.println("Woof");
+    }
+
+    @Override
+    public void play() {
+        System.out.println(name + " is playing");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Dog dog = new Dog("Buddy");
+        dog.makeSound(); // Woof
+        dog.sleep();     // Buddy is sleeping
+        dog.play();      // Buddy is playing
+        dog.eat();       // Pet is eating
+    }
+}
+```
+
+در این مثال، `Dog` هم از یک کلاس انتزاعی (`Animal`) و هم از یک رابط (`Pet`) استفاده می‌کند، که نشان‌دهنده قدرت و انعطاف‌پذیری ترکیب این دو ویژگی در جاوا است.
