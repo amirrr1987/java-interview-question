@@ -2,14 +2,15 @@
 # https://vitepress.dev/reference/default-theme-home-page
 layout: home
 
+
 hero:
   name: "Java interview question"
   text: "smaple java questions"
   tagline: My great project tagline
   actions:
     - theme: brand
-      text: Markdown Examples
-      link: /markdown-examples
+      text: Get started
+      link: /java-se/oop
     - theme: alt
       text: API Examples
       link: /api-examples
