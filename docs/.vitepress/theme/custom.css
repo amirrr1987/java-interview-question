@@ -1,0 +1,98 @@
+.VPSidebar {
+  left: auto !important;
+  right: 0 !important;
+}
+
+@media (min-width: 1440px) {
+  .VPSidebar[data-v-8f603b0e] {
+    padding-left: 0 !important;
+  }
+}
+@media (min-width: 1440px) {
+  .VPSidebar[data-v-8f603b0e] {
+    padding-left: max(
+      32px,
+      calc((100% - (var(--vp-layout-max-width) - 64px)) / 2)
+    );
+    width: calc(
+      (100% - (var(--vp-layout-max-width) - 64px)) / 2 + var(--vp-sidebar-width) -
+        32px
+    );
+  }
+}
+
+@media (min-width: 960px) {
+  .VPNavBar.has-sidebar .title {
+    right: 0;
+  }
+}
+
+@media (min-width: 1440px) {
+  .VPNavBar.has-sidebar .title {
+    padding-right: max(
+      32px,
+      calc((100% - (var(--vp-layout-max-width) - 64px)) / 2)
+    );
+    width: calc(
+      (100% - (var(--vp-layout-max-width) - 64px)) / 2 + var(--vp-sidebar-width) -
+        32px
+    );
+  }
+}
+
+@media (min-width: 960px) {
+  .VPNavBar.has-sidebar .content {
+    padding-left: 32px;
+    padding-right: var(--vp-sidebar-width);
+  }
+}
+
+@media (min-width: 1440px) {
+  .VPNavBar.has-sidebar .content {
+    padding-left: calc((100vw - var(--vp-layout-max-width)) / 2 + 32px);
+    padding-right: calc(
+      (100vw - var(--vp-layout-max-width)) / 2 + var(--vp-sidebar-width)
+    );
+  }
+}
+
+.menu + .appearance::before,
+.translations + .appearance::before {
+  margin-left: 16px;
+}
+
+.appearance + .social-links::before {
+  margin-right: 16px;
+}
+
+.social-links {
+  margin-left: -8px;
+}
+
+@media (min-width: 960px) {
+  .VPNavBar.has-sidebar .divider {
+    padding-right: var(--vp-sidebar-width);
+  }
+}
+
+@media (min-width: 1440px) {
+  .VPNavBar.has-sidebar .divider {
+    padding-right: calc(
+      (100vw - var(--vp-layout-max-width)) / 2 + var(--vp-sidebar-width)
+    );
+  }
+}
+
+@media (min-width: 1440px) {
+  .VPContent.has-sidebar[data-v-52f1cd35] {
+    padding-left: calc((100vw - var(--vp-layout-max-width)) / 2);
+    padding-right: calc(
+      (100vw - var(--vp-layout-max-width)) / 2 + var(--vp-sidebar-width)
+    );
+  }
+}
+@media (min-width: 960px) {
+  .VPContent.has-sidebar[data-v-52f1cd35] {
+    padding-right: var(--vp-sidebar-width);
+  }
+}
