@@ -5,7 +5,7 @@ export default defineConfig({
   title: "Java interview question",
   description: "smaple java questions",
   lang: "fa",
-  dir: "rtl",
+  // dir: "rtl",
   // lastUpdated: true,
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
