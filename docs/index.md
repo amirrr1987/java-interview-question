@@ -2,25 +2,22 @@
 # https://vitepress.dev/reference/default-theme-home-page
 layout: home
 
-
 hero:
-  name: "Java interview question"
+  name: "Java interview questions"
   text: "smaple java questions"
-  tagline: My great project tagline
+  tagline: Amir zarchini
   actions:
     - theme: brand
       text: Get started
       link: /java-se/oop
-    - theme: alt
-      text: API Examples
-      link: /api-examples
 
 features:
-  - title: Feature A
+  - title: Java
     details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature B
+  - title: Git
     details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature C
+  - title: NoSQL
+    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  - title: Linux
     details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
 ---
-
