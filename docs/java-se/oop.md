@@ -1131,3 +1131,677 @@ class MyClass {
 
 ### نکته
 توی ترد هر کدم stack خودشون رو دارن ولی heap یکیه
+
+
+## معماری garbage collector ؟
+
+معماری Garbage Collector (GC) در جاوا برای مدیریت خودکار حافظه طراحی شده است. این معماری به اجزای مختلفی تقسیم می‌شود که هر کدام نقش خاصی در جمع‌آوری و بازپس‌گیری حافظه‌ی اشیائی که دیگر مورد استفاده نیستند، دارند. در ادامه، معماری کلی GC را توضیح می‌دهم و سپس با استفاده از یک نمودار آن را نمایش می‌دهم.
+
+### اجزای کلیدی معماری Garbage Collector
+
+1. **Heap Memory:**
+   - **Young Generation (نسل جوان):**
+      - **Eden Space:** اشیاء جدید ابتدا در اینجا ایجاد می‌شوند.
+      - **Survivor Spaces (S0 و S1):** اشیاء از Eden Space که هنوز زنده هستند به یکی از این دو فضای Survivor منتقل می‌شوند.
+   - **Old Generation (نسل قدیمی):** اشیاءی که مدت طولانی‌تری زنده می‌مانند به اینجا منتقل می‌شوند.
+   - **Permanent Generation (PermGen) / Metaspace:** برای ذخیره‌سازی متادیتاهای کلاس و اطلاعات مربوط به کلاس‌ها استفاده می‌شود (در نسخه‌های جدید جاوا، Metaspace جایگزین PermGen شده است).
+
+2. **Garbage Collection Phases:**
+   - **Minor GC:** جمع‌آوری زباله‌های Young Generation.
+   - **Major GC / Full GC:** جمع‌آوری زباله‌های Old Generation و گاهی اوقات همه نسل‌ها.
+
+### نمودار معماری Garbage Collector
+
+برای نمایش تصویری از معماری GC، به نمودار زیر توجه کنید:
+
+```
++-----------------+
+|     Heap Memory  |
++-----------------+
+|                 |
+| +-------------+ |    +-------------+
+| | Young Gen   | |    | Old Gen     |
+| |             | |    |             |
+| | +---------+ | |    | +---------+ |
+| | | Eden    | |----->| | Object  | |
+| | |         | |    | | |         | |
+| | +---------+ | |    | +---------+ |
+| | +---------+ | |    |             |
+| | | S0      | |----->|             |
+| | +---------+ | |    +-------------+
+| | +---------+ | |
+| | | S1      | | |
+| | +---------+ | |
+| +-------------+ |
+|                 |
++-----------------+
+
+Legend:
+- Young Gen: Generation for new objects
+  - Eden: Space where new objects are initially allocated
+  - S0, S1: Survivor spaces for objects that survive garbage collection in Eden
+- Old Gen: Generation for long-lived objects
+```
+
+### توضیحات نمودار
+
+1. **Heap Memory:**
+   - **Young Generation (نسل جوان):**
+      - **Eden Space:** جایی که اشیاء جدید ابتدا ایجاد می‌شوند.
+      - **Survivor Spaces (S0 و S1):** اشیائی که از Eden Space جان سالم به در می‌برند به یکی از این فضاهای Survivor منتقل می‌شوند. در هر مرحله، یکی از این فضاها به عنوان مقصد و دیگری به عنوان منبع استفاده می‌شود.
+   - **Old Generation (نسل قدیمی):** اشیاءی که برای مدت طولانی‌تری زنده می‌مانند به اینجا منتقل می‌شوند و در اینجا نگهداری می‌شوند.
+
+2. **فرآیندهای Garbage Collection:**
+   - **Minor GC:** این فرآیند برای جمع‌آوری زباله‌های موجود در Young Generation انجام می‌شود. اشیاء زنده از Eden Space به Survivor Space ها منتقل می‌شوند.
+   - **Major GC / Full GC:** این فرآیند برای جمع‌آوری زباله‌های موجود در Old Generation و گاهی اوقات در تمامی نسل‌ها انجام می‌شود. این فرآیند سنگین‌تر است و مدت زمان بیشتری طول می‌کشد.
+
+اشیاءی که استفاده نمی‌شوند و به آنها دسترسی وجود ندارد، در مراحل مختلف جمع‌آوری زباله (Garbage Collection) از بین می‌روند، و این مراحل بستگی به محل قرارگیری این اشیاء در حافظه Heap دارد. به طور کلی، روند کار به این صورت است:
+
+### Young Generation
+
+1. **Eden Space:**
+   - اشیاء جدید ابتدا در اینجا ایجاد می‌شوند.
+   - وقتی فضای Eden پر می‌شود، یک Minor GC (جمع‌آوری زباله‌ی کوچک) انجام می‌شود.
+   - در طی Minor GC، اشیاء زنده از Eden Space به یکی از فضاهای Survivor (S0 یا S1) منتقل می‌شوند.
+   - اشیائی که دسترسی به آنها وجود ندارد و در Eden Space قرار دارند، در این مرحله جمع‌آوری و حذف می‌شوند.
+
+2. **Survivor Spaces (S0 و S1):**
+   - اشیاءی که از مرحله‌ی قبلی جان سالم به در برده‌اند به این فضاها منتقل می‌شوند.
+   - هر بار که یک Minor GC اجرا می‌شود، اشیاء زنده بین دو فضای Survivor جابجا می‌شوند.
+   - اگر یک شیء پس از چندین Minor GC هنوز زنده باشد، به Old Generation منتقل می‌شود.
+   - اشیائی که دسترسی به آنها وجود ندارد و در Survivor Spaces قرار دارند، در طی Minor GC جمع‌آوری و حذف می‌شوند.
+
+### Old Generation
+
+- **Old Generation:**
+   - اشیائی که برای مدت طولانی‌تری زنده می‌مانند و از مراحل چندگانه‌ی Minor GC جان سالم به در برده‌اند، به Old Generation منتقل می‌شوند.
+   - جمع‌آوری زباله در Old Generation به عنوان Major GC یا Full GC شناخته می‌شود.
+   - اشیائی که دسترسی به آنها وجود ندارد و در Old Generation قرار دارند، در طی Major GC یا Full GC جمع‌آوری و حذف می‌شوند.
+
+### نتیجه‌گیری
+
+- اشیائی که دسترسی به آنها وجود ندارد و در Young Generation قرار دارند (Eden Space و Survivor Spaces)، در طی Minor GC جمع‌آوری و حذف می‌شوند.
+- اشیائی که به Old Generation منتقل شده‌اند و دسترسی به آنها وجود ندارد، در طی Major GC یا Full GC جمع‌آوری و حذف می‌شوند.
+
+### نمودار فرآیند Garbage Collection
+
+```
++-----------------+
+|     Heap Memory  |
++-----------------+
+|                 |
+| +-------------+ |    +-------------+
+| | Young Gen   | |    | Old Gen     |
+| |             | |    |             |
+| | +---------+ | |    | +---------+ |
+| | | Eden    | |----->| | Object  | |
+| | |         | |    | | |         | |
+| | +---------+ | |    | +---------+ |
+| | +---------+ | |    |             |
+| | | S0      | |----->|             |
+| | +---------+ | |    +-------------+
+| | +---------+ | |
+| | | S1      | | |
+| | +---------+ | |
+| +-------------+ |
+|                 |
++-----------------+
+
+Legend:
+- Young Gen: Generation for new objects
+  - Eden: Space where new objects are initially allocated
+  - S0, S1: Survivor spaces for objects that survive garbage collection in Eden
+- Old Gen: Generation for long-lived objects
+```
+
+در این نمودار، فرآیندهای جمع‌آوری زباله و نحوه‌ی جابجایی اشیاء بین فضاهای مختلف نمایش داده شده است. اشیاء غیرقابل دسترسی در هر یک از این فضاها در طی جمع‌آوری زباله حذف می‌شوند.
+
+### نتیجه‌گیری کلی
+
+Garbage Collector در جاوا از یک معماری چند نسلی استفاده می‌کند که شامل Young Generation, Old Generation و (در نسخه‌های قدیمی) Permanent Generation می‌شود. این معماری به بهبود کارایی GC و مدیریت بهینه‌تر حافظه کمک می‌کند. استفاده از نمودارها و توضیحات بالا می‌تواند به درک بهتر نحوه کار GC و بهینه‌سازی برنامه‌های جاوا کمک کند.
+
+
+## فرق generic با object چیه و generic چه مزیتی داره؟
+
+در جاوا، تفاوت‌های اصلی بین `Object` و `Generic` در نحوه مدیریت نوع داده‌ها و مزایایی که Generic ارائه می‌دهد، قابل مشاهده است. برای درک بهتر این تفاوت‌ها، بیایید ابتدا هر یک را تعریف کنیم و سپس به مزایا و معایب هر کدام بپردازیم.
+
+### `Object`
+
+- **تعریف:**
+   - `Object` نوع پایه‌ای است که همه کلاس‌ها در جاوا از آن ارث‌بری می‌کنند. وقتی از `Object` به عنوان نوع داده استفاده می‌کنید، می‌توانید هر شیء جاوا را در آن قرار دهید.
+
+- **مثال:**
+
+  ```java
+  public class ObjectExample {
+      public static void main(String[] args) {
+          Object obj1 = "Hello";
+          Object obj2 = 123;
+
+          System.out.println(obj1);
+          System.out.println(obj2);
+      }
+  }
+  ```
+- **معایب:**
+   - استفاده از `Object` به دلیل عدم اطلاع از نوع دقیق داده، نیاز به عملیات تبدیل نوع (type casting) دارد.
+   - عملیات تبدیل نوع می‌تواند منجر به خطاهای زمان اجرا (runtime errors) شود.
+   - امنیت نوع (type safety) را فراهم نمی‌کند، بنابراین احتمال خطاهای نوع زیاد است.
+
+### `Generic`
+
+- **تعریف:**
+   - Generics یک ویژگی در جاوا است که به شما اجازه می‌دهد تا کلاس‌ها، رابط‌ها و متدهایی را تعریف کنید که بتوانند با انواع داده‌های مختلف به صورت ایمن (type-safe) کار کنند، بدون نیاز به تبدیل نوع.
+
+- **مثال:**
+
+  ```java
+  import java.util.ArrayList;
+  import java.util.List;
+
+  public class GenericExample {
+      public static void main(String[] args) {
+          List<String> stringList = new ArrayList<>();
+          stringList.add("Hello");
+          // stringList.add(123); // کامپایل نمی‌شود، زیرا فقط رشته‌ها مجاز هستند
+
+          String str = stringList.get(0); // نیازی به تبدیل نوع نیست
+          System.out.println(str);
+      }
+  }
+  ```
+- **مزایا:**
+   - **امنیت نوع (Type Safety):** Generics تضمین می‌کند که تنها نوع‌های صحیح داده به ساختار داده اضافه می‌شوند. این ویژگی باعث کاهش خطاهای زمان اجرا و افزایش پایداری برنامه می‌شود.
+   - **کاهش نیاز به تبدیل نوع (Casting):** با استفاده از Generics، نیازی به تبدیل نوع نیست، که کد را خواناتر و قابل نگهداری‌تر می‌کند.
+   - **استفاده مجدد (Reusability):** Generics به شما اجازه می‌دهد تا کدهایی بنویسید که با انواع داده‌های مختلف کار کنند، که این ویژگی باعث افزایش استفاده مجدد از کد می‌شود.
+
+### تفاوت‌های کلیدی بین `Object` و `Generic`
+
+1. **امنیت نوع (Type Safety):**
+   - **Object:** نیاز به تبدیل نوع دارد و احتمال خطاهای زمان اجرا وجود دارد.
+   - **Generic:** امنیت نوع را فراهم می‌کند و خطاهای زمان کامپایل را کاهش می‌دهد.
+
+2. **خوانایی و نگهداری کد:**
+   - **Object:** نیاز به تبدیل نوع کد را پیچیده‌تر و خوانایی آن را کاهش می‌دهد.
+   - **Generic:** کاهش نیاز به تبدیل نوع باعث خواناتر و قابل نگهداری‌تر شدن کد می‌شود.
+
+3. **استفاده مجدد از کد:**
+   - **Object:** کدهایی که از `Object` استفاده می‌کنند به صورت کلی‌تر هستند و برای استفاده مجدد نیاز به تبدیل نوع دارند.
+   - **Generic:** کدهای Generic به شما اجازه می‌دهند که یک کد را برای انواع داده‌های مختلف استفاده کنید، بدون نیاز به تغییر کد اصلی.
+
+### نتیجه‌گیری
+
+- **`Object`:** استفاده از `Object` برای نگهداری انواع داده‌های مختلف معمولاً نیاز به تبدیل نوع دارد و ممکن است منجر به خطاهای زمان اجرا شود.
+- **`Generic`:** استفاده از Generics باعث افزایش امنیت نوع، کاهش نیاز به تبدیل نوع و افزایش استفاده مجدد از کد می‌شود.
+
+با توجه به این مزایا، استفاده از Generics به طور کلی ترجیح داده می‌شود، به خصوص در مواقعی که نیاز به کار با انواع داده‌های مختلف به صورت ایمن دارید.
+
+
+## تفاوت deep copy با shallow copy با مثال ؟
+
+در جاوا، وقتی شما یک شیء را کپی می‌کنید، می‌توانید از دو روش اصلی استفاده کنید: **Shallow Copy** و **Deep Copy**. این دو روش نحوه کپی‌برداری از اشیاء و زیر‌اشیاء (nested objects) را مشخص می‌کنند. بیایید این دو روش را با جزئیات بیشتر بررسی کنیم و مثال‌هایی برای هر کدام ارائه دهیم.
+
+### Shallow Copy
+
+**تعریف:**
+- Shallow Copy یک کپی سطحی از شیء ایجاد می‌کند. در این روش، یک کپی جدید از شیء ایجاد می‌شود، اما هر مرجع (reference) به اشیاء دیگر همچنان به همان اشیاء اشاره می‌کند. این بدان معناست که تغییر در زیر‌اشیاء در کپی اصلی و کپی سطحی منعکس می‌شود.
+
+**مثال:**
+
+```java
+import java.util.Arrays;
+
+class ShallowCopyExample implements Cloneable {
+    int[] data;
+
+    public ShallowCopyExample(int[] data) {
+        this.data = data;
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone(); // Shallow copy
+    }
+
+    public static void main(String[] args) throws CloneNotSupportedException {
+        int[] data = {1, 2, 3};
+        ShallowCopyExample original = new ShallowCopyExample(data);
+        ShallowCopyExample shallowCopy = (ShallowCopyExample) original.clone();
+
+        System.out.println("Original data: " + Arrays.toString(original.data));
+        System.out.println("Shallow copy data: " + Arrays.toString(shallowCopy.data));
+
+        // Modify the data array
+        original.data[0] = 10;
+
+        System.out.println("After modification:");
+        System.out.println("Original data: " + Arrays.toString(original.data));
+        System.out.println("Shallow copy data: " + Arrays.toString(shallowCopy.data));
+    }
+}
+```
+**خروجی:**
+
+```
+Original data: [1, 2, 3]
+Shallow copy data: [1, 2, 3]
+After modification:
+Original data: [10, 2, 3]
+Shallow copy data: [10, 2, 3]
+```
+
+در این مثال، تغییر در آرایه `data` در شیء اصلی نیز در کپی سطحی منعکس می‌شود، زیرا هر دو به همان آرایه اشاره می‌کنند.
+
+### Deep Copy
+
+**تعریف:**
+- Deep Copy یک کپی عمیق از شیء ایجاد می‌کند. در این روش، یک کپی جدید از شیء و تمام زیر‌اشیاء ایجاد می‌شود. بنابراین، تغییرات در زیر‌اشیاء در کپی اصلی و کپی عمیق مستقل از یکدیگر هستند.
+
+**مثال:**
+
+```java
+import java.util.Arrays;
+
+class DeepCopyExample implements Cloneable {
+    int[] data;
+
+    public DeepCopyExample(int[] data) {
+        this.data = data;
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        // Perform a deep copy
+        int[] clonedData = new int[data.length];
+        System.arraycopy(data, 0, clonedData, 0, data.length);
+        return new DeepCopyExample(clonedData);
+    }
+
+    public static void main(String[] args) throws CloneNotSupportedException {
+        int[] data = {1, 2, 3};
+        DeepCopyExample original = new DeepCopyExample(data);
+        DeepCopyExample deepCopy = (DeepCopyExample) original.clone();
+
+        System.out.println("Original data: " + Arrays.toString(original.data));
+        System.out.println("Deep copy data: " + Arrays.toString(deepCopy.data));
+
+        // Modify the data array
+        original.data[0] = 10;
+
+        System.out.println("After modification:");
+        System.out.println("Original data: " + Arrays.toString(original.data));
+        System.out.println("Deep copy data: " + Arrays.toString(deepCopy.data));
+    }
+}
+```
+**خروجی:**
+
+```
+Original data: [1, 2, 3]
+Deep copy data: [1, 2, 3]
+After modification:
+Original data: [10, 2, 3]
+Deep copy data: [1, 2, 3]
+```
+در این مثال، تغییر در آرایه `data` در شیء اصلی هیچ تاثیری بر روی کپی عمیق ندارد، زیرا آرایه‌ای جدید برای کپی عمیق ایجاد شده است.
+
+### مقایسه Deep Copy و Shallow Copy
+
+- **Shallow Copy:**
+   - کپی سطحی از شیء.
+   - مراجع به زیر‌اشیاء همچنان به همان اشیاء اصلی اشاره می‌کنند.
+   - تغییرات در زیر‌اشیاء در کپی اصلی و کپی سطحی منعکس می‌شوند.
+   - سریع‌تر و کمتر مصرف‌کننده حافظه است.
+
+- **Deep Copy:**
+   - کپی عمیق از شیء.
+   - کپی‌های جدید از زیر‌اشیاء ایجاد می‌شود.
+   - تغییرات در زیر‌اشیاء در کپی اصلی و کپی عمیق مستقل هستند.
+   - کندتر و مصرف‌کننده حافظه بیشتری است.
+
+### نتیجه‌گیری
+
+- **Shallow Copy:** مناسب برای مواقعی که نیازی به تغییرات مستقل در زیر‌اشیاء نیست.
+- **Deep Copy:** مناسب برای مواقعی که نیاز به تغییرات مستقل در زیر‌اشیاء دارید و نمی‌خواهید کپی اصلی و کپی جدید تاثیری بر روی یکدیگر داشته باشند.
+
+با درک این مفاهیم، می‌توانید بسته به نیاز خود تصمیم بگیرید که از کدام روش کپی‌برداری استفاده کنید.
+
+
+## copmostion چیه ، با مثال؟
+
+
+**تعریف:**
+ترکیب (Composition) یک روش طراحی شی‌ءگرا است که در آن یک کلاس شامل اشیاء دیگر به عنوان اعضای خود است. در ترکیب، به جای استفاده از ارث‌بری (Inheritance) برای اشتراک‌گذاری رفتار بین کلاس‌ها، یک کلاس با داشتن اشیاء از کلاس‌های دیگر رفتار مورد نیاز را به دست می‌آورد. این روش انعطاف‌پذیری بیشتری نسبت به ارث‌بری ارائه می‌دهد و به باز استفاده‌ی مجدد کد کمک می‌کند.
+
+### مزایای ترکیب
+
+1. **قابلیت استفاده مجدد کد:** می‌توانید رفتارهای مختلف را در کلاس‌های جداگانه تعریف کنید و آن‌ها را در کلاس‌های دیگر استفاده کنید.
+2. **کاهش وابستگی:** تغییرات در یک کلاس تأثیر کمتری بر روی کلاس‌های دیگر دارد.
+3. **انعطاف‌پذیری:** می‌توانید رفتارهای مختلف را به اشیاء در زمان اجرا اضافه یا تغییر دهید.
+
+### مثال از ترکیب
+
+فرض کنید می‌خواهیم یک سیستم ساده برای مدیریت خودروها ایجاد کنیم. به جای ارث‌بری از کلاس‌های مختلف، از ترکیب استفاده می‌کنیم.
+
+**مثال:**
+
+```java
+// کلاس Engine که رفتار موتور را تعریف می‌کند
+class Engine {
+    public void start() {
+        System.out.println("Engine started.");
+    }
+
+    public void stop() {
+        System.out.println("Engine stopped.");
+    }
+}
+
+// کلاس Transmission که رفتار جعبه دنده را تعریف می‌کند
+class Transmission {
+    public void shiftUp() {
+        System.out.println("Gear shifted up.");
+    }
+
+    public void shiftDown() {
+        System.out.println("Gear shifted down.");
+    }
+}
+
+// کلاس Car که از ترکیب استفاده می‌کند تا رفتارهای Engine و Transmission را به دست آورد
+class Car {
+    private Engine engine;
+    private Transmission transmission;
+
+    public Car() {
+        this.engine = new Engine();
+        this.transmission = new Transmission();
+    }
+
+    public void startCar() {
+        engine.start();
+        transmission.shiftUp();
+    }
+
+    public void stopCar() {
+        transmission.shiftDown();
+        engine.stop();
+    }
+}
+
+// کلاس اصلی برای تست کردن سیستم
+public class CompositionExample {
+    public static void main(String[] args) {
+        Car car = new Car();
+        car.startCar(); // خروجی: Engine started. Gear shifted up.
+        car.stopCar();  // خروجی: Gear shifted down. Engine stopped.
+    }
+}
+```
+### توضیحات مثال:
+
+1. **کلاس‌های Engine و Transmission:**
+   - این کلاس‌ها رفتارهای خاصی را تعریف می‌کنند. `Engine` رفتارهای مربوط به موتور و `Transmission` رفتارهای مربوط به جعبه دنده را تعریف می‌کند.
+
+2. **کلاس Car:**
+   - این کلاس از ترکیب استفاده می‌کند و شامل اشیاء از کلاس‌های `Engine` و `Transmission` است. با این روش، `Car` می‌تواند از رفتارهای تعریف شده در این کلاس‌ها استفاده کند بدون اینکه از آن‌ها ارث‌بری کند.
+
+3. **متدهای startCar و stopCar:**
+   - این متدها از اشیاء `engine` و `transmission` برای اجرای رفتارهای مربوط به روشن و خاموش کردن خودرو استفاده می‌کنند.
+
+### نتیجه‌گیری
+
+ترکیب یک روش طراحی قدرتمند است که به شما اجازه می‌دهد تا رفتارهای مختلف را در کلاس‌های جداگانه تعریف کنید و آن‌ها را به کلاس‌های دیگر اضافه کنید. این روش انعطاف‌پذیری بیشتری نسبت به ارث‌بری ارائه می‌دهد و به کاهش وابستگی‌ها و افزایش استفاده مجدد از کد کمک می‌کند.
+
+## انواع exception ؟
+
+در جاوا، استثناها (Exceptions) به دو دسته کلی تقسیم می‌شوند: استثناهای بررسی‌شده (Checked Exceptions) و استثناهای بررسی‌نشده (Unchecked Exceptions). هر یک از این دسته‌ها شامل انواع مختلفی از استثناها هستند که برای مدیریت خطاها و شرایط غیرعادی در برنامه‌ها استفاده می‌شوند.
+
+### 1. Checked Exceptions (استثناهای بررسی‌شده)
+
+Checked Exceptions استثناهایی هستند که در زمان کامپایل بررسی می‌شوند. برنامه‌نویس باید این نوع استثناها را به صورت صریح مدیریت کند، یعنی باید از `try-catch` استفاده کند یا متد مربوطه را با کلمه کلیدی `throws` علامت‌گذاری کند.
+
+**مثال‌های Checked Exceptions:**
+- **IOException:** این استثنا زمانی رخ می‌دهد که یک عملیات ورودی/خروجی دچار مشکل می‌شود.
+- **SQLException:** این استثنا زمانی رخ می‌دهد که یک خطا در دسترسی به پایگاه داده رخ می‌دهد.
+- **ClassNotFoundException:** این استثنا زمانی رخ می‌دهد که کلاس مورد نظر در زمان اجرا یافت نشود.
+
+**مثال:**
+
+```java
+import java.io.*;
+
+public class CheckedExceptionExample {
+    public static void main(String[] args) {
+        try {
+            FileReader file = new FileReader("test.txt");
+            BufferedReader fileInput = new BufferedReader(file);
+
+            // خواندن و نمایش اولین خط از فایل
+            System.out.println(fileInput.readLine());
+            fileInput.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+### 2. Unchecked Exceptions (استثناهای بررسی‌نشده)
+
+Unchecked Exceptions استثناهایی هستند که در زمان اجرا رخ می‌دهند و نیازی به مدیریت صریح در زمان کامپایل ندارند. این استثناها از کلاس `RuntimeException` مشتق می‌شوند.
+
+**مثال‌های Unchecked Exceptions:**
+- **NullPointerException:** این استثنا زمانی رخ می‌دهد که به یک مرجع تهی (null reference) دسترسی پیدا کنید.
+- **ArrayIndexOutOfBoundsException:** این استثنا زمانی رخ می‌دهد که به یک ایندکس خارج از محدوده یک آرایه دسترسی پیدا کنید.
+- **ArithmeticException:** این استثنا زمانی رخ می‌دهد که یک خطای ریاضی مانند تقسیم بر صفر رخ دهد.
+
+**مثال:**
+
+```java
+public class UncheckedExceptionExample {
+    public static void main(String[] args) {
+        try {
+            int[] numbers = {1, 2, 3};
+            System.out.println(numbers[5]); // خطای ArrayIndexOutOfBoundsException
+        } catch (ArrayIndexOutOfBoundsException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            String str = null;
+            System.out.println(str.length()); // خطای NullPointerException
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+### 3. Error (خطاها)
+
+خطاها شرایط غیرعادی جدی هستند که معمولاً توسط برنامه قابل بازیابی نیستند. این خطاها از کلاس `Error` مشتق می‌شوند و نیازی به مدیریت صریح ندارند. خطاها معمولاً توسط JVM پرتاب می‌شوند.
+
+**مثال‌های Error:**
+- **OutOfMemoryError:** این خطا زمانی رخ می‌دهد که JVM نتواند حافظه بیشتری اختصاص دهد.
+- **StackOverflowError:** این خطا زمانی رخ می‌دهد که پشته‌ی فراخوانی متدها پر شود.
+
+**مثال:**
+
+```java
+public class ErrorExample {
+    public static void main(String[] args) {
+        try {
+            recursiveMethod();
+        } catch (StackOverflowError e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void recursiveMethod() {
+        // فراخوانی بازگشتی برای ایجاد خطای StackOverflowError
+        recursiveMethod();
+    }
+}
+```
+### نتیجه‌گیری
+
+در جاوا، مدیریت استثناها بخش مهمی از برنامه‌نویسی است که به برنامه‌نویسان اجازه می‌دهد تا خطاها و شرایط غیرعادی را به صورت مؤثری مدیریت کنند. درک تفاوت بین Checked Exceptions، Unchecked Exceptions، و Errors و استفاده صحیح از هر یک از آن‌ها به شما کمک می‌کند تا برنامه‌های پایدارتر و قابل اعتمادتری ایجاد کنید.
+
+
+## memory leak چطور اتفاق میفته ؟
+
+
+**Memory Leak** (نشت حافظه) زمانی اتفاق می‌افتد که برنامه حافظه‌ای را که دیگر مورد استفاده قرار نمی‌دهد، آزاد نمی‌کند. در نتیجه، حافظه به طور مستمر کاهش می‌یابد و در نهایت ممکن است برنامه با کمبود حافظه مواجه شود. در جاوا، مدیریت حافظه توسط Garbage Collector انجام می‌شود، اما همچنان ممکن است نشت حافظه رخ دهد.
+
+### چگونه Memory Leak اتفاق می‌افتد؟
+
+در جاوا، Memory Leak معمولاً به دلایل زیر رخ می‌دهد:
+
+1. **object reference غیرضروری :**
+   - وقتی اشیاءی که دیگر نیازی به آن‌ها نیست، همچنان توسط مرجع‌های فعال نگه داشته می‌شوند، Garbage Collector نمی‌تواند آن‌ها را بازیابی کند.
+
+2. **استفاده نادرست از مجموعه‌ها (Collections):**
+   - اضافه کردن اشیاء به مجموعه‌ها (مانند `List`, `Set`, `Map`) بدون حذف آن‌ها زمانی که دیگر نیازی به آن‌ها نیست، می‌تواند منجر به نشت حافظه شود.
+
+3. **مراجع استاتیک (Static References):**
+   - مراجع استاتیک تا زمانی که کلاس بارگذاری شده است، در حافظه باقی می‌مانند. اگر اشیاءی به صورت استاتیک مرجع‌دهی شوند و دیگر استفاده نشوند، حافظه آن‌ها آزاد نخواهد شد.
+
+4. **شنوندگان و رسیورها (Listeners and Callbacks):**
+   - ثبت شنوندگان یا رسیورها بدون لغو ثبت آن‌ها می‌تواند باعث نگه‌داشتن مراجع غیرضروری شود.
+
+### مثال‌های Memory Leak
+
+**مثال 1: object reference غیرضروری**
+
+```java
+import java.util.ArrayList;
+import java.util.List;
+
+public class MemoryLeakExample {
+    private List<String> dataList = new ArrayList<>();
+
+    public void addData() {
+        for (int i = 0; i < 100000; i++) {
+            dataList.add("Data " + i);
+        }
+    }
+
+    public void clearData() {
+        // این خط از کد مراجع به اشیاء را آزاد نمی‌کند
+        dataList.clear(); 
+        // dataList = null; // راه‌حل درست: آزاد کردن مرجع
+    }
+
+    public static void main(String[] args) {
+        MemoryLeakExample example = new MemoryLeakExample();
+        example.addData();
+        example.clearData();
+    }
+}
+```
+
+**مثال 2: استفاده نادرست از collection**
+
+```java
+import java.util.HashMap;
+import java.util.Map;
+
+public class MemoryLeakWithMap {
+    private Map<Integer, String> map = new HashMap<>();
+
+    public void addData() {
+        for (int i = 0; i < 100000; i++) {
+            map.put(i, "Data " + i);
+        }
+    }
+
+    public void clearData() {
+        // این خط از کد مراجع به اشیاء را آزاد نمی‌کند
+        map.clear(); 
+        // map = null; // راه‌حل درست: آزاد کردن مرجع
+    }
+
+    public static void main(String[] args) {
+        MemoryLeakWithMap example = new MemoryLeakWithMap();
+        example.addData();
+        example.clearData();
+    }
+}
+```
+
+**مثال 3: مراجع استاتیک**
+
+```java
+public class StaticReferenceExample {
+    private static List<String> dataList = new ArrayList<>();
+
+    public static void addData() {
+        for (int i = 0; i < 100000; i++) {
+            dataList.add("Data " + i);
+        }
+    }
+
+    public static void clearData() {
+        // این خط از کد مراجع به اشیاء را آزاد نمی‌کند
+        dataList.clear(); 
+        // dataList = null; // راه‌حل درست: آزاد کردن مرجع
+    }
+
+    public static void main(String[] args) {
+        addData();
+        clearData();
+    }
+}
+```
+
+**مثال 4: Listeners and Callbacks**
+
+```java
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+
+public class ListenerLeakExample extends JFrame {
+    public ListenerLeakExample() {
+        JButton button = new JButton("Click me");
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Button clicked");
+            }
+        });
+        add(button);
+        setSize(200, 200);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        ListenerLeakExample example = new ListenerLeakExample();
+        // example.dispose(); // راه‌حل درست: حذف شنوندگان قبل از بستن
+    }
+}
+```
+
+### چگونه از Memory Leak جلوگیری کنیم؟
+
+1. **استفاده از ابزارهای پروفایلینگ (Profiling):**
+   - ابزارهایی مانند VisualVM، YourKit، JProfiler می‌توانند برای شناسایی نشت‌های حافظه استفاده شوند.
+
+2. **مراجع ضعیف (Weak References):**
+   - استفاده از `WeakReference` برای نگه‌داشتن اشیاءی که می‌توانند بازیابی شوند.
+
+3. **مدیریت درست مجموعه‌ها:**
+   - اطمینان حاصل کنید که اشیاءی که دیگر نیازی به آن‌ها نیست از مجموعه‌ها حذف می‌شوند.
+
+4. **حذف شنوندگان:**
+   - اطمینان حاصل کنید که شنوندگان و رسیورها به درستی ثبت و لغو ثبت می‌شوند.
+
+5. **بررسی کد برای مراجع استاتیک:**
+   - از مراجع استاتیک با احتیاط استفاده کنید و مطمئن شوید که زمانی که دیگر نیازی به آن‌ها نیست، آزاد می‌شوند.
+
+### نتیجه‌گیری
+
+نشت حافظه یک مشکل جدی است که می‌تواند منجر به کاهش کارایی و در نهایت شکست برنامه شود. با درک نحوه وقوع نشت‌های حافظه و استفاده از تکنیک‌های مناسب برای جلوگیری از آن‌ها، می‌توانید برنامه‌های پایدارتر و کارآمدتری ایجاد کنید.
