@@ -13,7 +13,13 @@ export default defineConfig({
       { text: "Home", link: "/" },
       // { text: "Examples", link: "/markdown-examples" },
     ],
-
+    search: {
+      provider: "local",
+    },
+    logo: {
+      src: "https://cdn.iconscout.com/icon/free/png-256/free-java-60-1174953.png?f=webp&w=256",
+      alt: "java logo",
+    },
     sidebar: [
       {
         text: "Java SE",
@@ -39,9 +45,15 @@ export default defineConfig({
         ],
       },
     ],
-
+    footer: {
+      copyright: `Designed by <a href="https://amirmaghami.ir/" target="_blank">Amir Maghami</a>`,
+      message: "Amir Zarchini",
+    },
     socialLinks: [
-      { icon: "github", link: "https://github.com/amir-zarchini/interview-question" },
+      {
+        icon: "github",
+        link: "https://github.com/amir-zarchini/interview-question",
+      },
     ],
   },
 });
