@@ -1,13 +1,5 @@
-## Stream
+## تفاوت map با flatmap ؟
 
-------------------------------
-
-<details>
-<summary dir="rtl"> 
-22) تفاوت map با flatmap ؟
-</summary>
-
-<div dir="rtl">
 تفاوت اصلی بین `map` و `flatMap` در جاوا (و سایر زبان‌های تابعی مانند Scala و Kotlin) در نحوه پردازش و دستیابی به داده‌های تو در تو است. این تفاوت به ویژه در برنامه‌نویسی تابعی و کار با استریم‌ها (streams) در جاوا قابل توجه است. بیایید با مثال‌هایی توضیح دهیم.
 
 ### `map` در جاوا
@@ -15,7 +7,6 @@
 متد `map` یک تابع را بر روی هر عنصر از استریم اعمال می‌کند و یک استریم جدید با نتایج به دست آمده تولید می‌کند. این متد به طور مستقیم روی هر عنصر اعمال می‌شود و ساختار داده را تغییر نمی‌دهد.
 
 **مثال:**
-</div>
 
 ```java
 import java.util.Arrays;
@@ -33,8 +24,6 @@ public class MapExample {
 }
 ```
 
-<div dir="rtl">
-
 در این مثال، متد `map` طول هر نام را به دست آورده و یک لیست از طول‌ها (لیستی از اعداد صحیح) ایجاد می‌کند.
 
 ### `flatMap` در جاوا
@@ -42,8 +31,6 @@ public class MapExample {
 متد `flatMap` برای کار با استریم‌هایی استفاده می‌شود که خود شامل استریم‌های تو در تو هستند. این متد هر عنصر را به یک استریم تبدیل می‌کند و سپس این استریم‌ها را در یک استریم صاف (تک سطحی) ترکیب می‌کند. به عبارتی دیگر، `flatMap` یک استریم از استریم‌ها را به یک استریم صاف از عناصر تبدیل می‌کند.
 
 **مثال:**
-</div>
-
 
 ```java
 import java.util.Arrays;
@@ -66,7 +53,6 @@ public class FlatMapExample {
 }
 ```
 
-<div dir="rtl">
 در این مثال، متد `flatMap` لیست‌های تو در تو را به یک لیست صاف از رشته‌ها تبدیل می‌کند.
 
 ### مقایسه `map` و `flatMap`
@@ -77,7 +63,6 @@ public class FlatMapExample {
 - ساختار داده‌ها را تغییر نمی‌دهد (هر عنصر به یک عنصر تبدیل می‌شود).
 
 **مثال:**
-</div>
 
 ```java
 List<Integer> numbers = Arrays.asList(1, 2, 3, 4);
@@ -87,14 +72,12 @@ List<Integer> squares = numbers.stream()
 // خروجی: [1, 4, 9, 16]
 ```
 
-<div dir="rtl">
 **2. `flatMap` :**
 - اعمال یک تابع بر روی هر عنصر که خود یک استریم تولید می‌کند، و سپس صاف کردن استریم‌های تو در تو به یک استریم تک سطحی.
 - مناسب برای پردازش داده‌های تو در تو.
 - ساختار داده‌ها را تغییر می‌دهد (هر عنصر به یک استریم تبدیل می‌شود و استریم‌های تو در تو صاف می‌شوند).
 
 **مثال:**
-</div>
 
 ```java
 List<List<Integer>> nestedNumbers = Arrays.asList(
@@ -108,23 +91,15 @@ List<Integer> flatList = nestedNumbers.stream()
 // خروجی: [1, 2, 3, 4, 5, 6, 7, 8]
 ```
 
-<div dir="rtl">
-
 ### نتیجه‌گیری
 
 - **`map` :** برای اعمال یک تابع به هر عنصر و تولید یک استریم از نتایج.
 - **`flatMap` :** برای اعمال یک تابع که استریم تولید می‌کند و سپس صاف کردن استریم‌های تو در تو به یک استریم تک سطحی.
 
 این دو متد ابزارهای قدرتمندی در جاوا برای پردازش داده‌ها در استریم‌ها هستند و با استفاده مناسب از آن‌ها می‌توان کدهای تمیزتر و کارآمدتری نوشت.
-</div>
-</details>
 
-<details>
-<summary dir="rtl"> 
-23) چطور یه لیست رو با stream فیلتر کنیم ؟
-</summary>
 
-<div dir="rtl">
+##  چطور یه لیست رو با stream فیلتر کنیم ؟
 
 برای فیلتر کردن یک لیست با استفاده از `Stream` در جاوا، می‌توانید از متد `filter` استفاده کنید. `Stream` یک API قدرتمند برای پردازش مجموعه‌های داده به صورت دکلارتیو است و به شما اجازه می‌دهد تا عملیات‌هایی مانند فیلتر کردن، نقشه‌برداری و کاهش را به سادگی انجام دهید.
 
@@ -132,7 +107,6 @@ List<Integer> flatList = nestedNumbers.stream()
 
 فرض کنید یک لیست از اعداد صحیح دارید و می‌خواهید فقط اعداد زوج را از این لیست فیلتر کنید.
 
-</div>
 
 ```java
 import java.util.List;
@@ -159,8 +133,6 @@ public class StreamFilterExample {
 }
 ```
 
-<div dir="rtl">
-
 ### توضیح کد:
 
 1. **ایجاد لیست:**
@@ -180,7 +152,6 @@ public class StreamFilterExample {
 
 **مرحله 1: تعریف کلاس Person**
 
-</div>
 
 ```java
 class Person {
@@ -207,11 +178,8 @@ class Person {
 }
 ```
 
-<div dir="rtl">
-
 **مرحله 2: ایجاد و فیلتر کردن لیست از اشیاء Person**
 
-</div>
 
 ```java
 import java.util.List;
@@ -238,8 +206,6 @@ public class StreamFilterExample {
 }
 ```
 
-<div dir="rtl">
-
 ### توضیح کد:
 
 1. **تعریف کلاس Person:**
@@ -261,16 +227,10 @@ public class StreamFilterExample {
 
 استفاده از `Stream` و متد `filter` در جاوا، روش قدرتمند و کارآمدی برای پردازش و فیلتر کردن لیست‌ها است. با استفاده از این ابزارها، می‌توانید کدهای خواناتر و قابل نگهداری‌تری بنویسید.
 
-</div>
 
-</details>
 
-<details>
-<summary dir="rtl"> 
-24) consumer , suplier در java ؟
-</summary>
 
-<div dir="rtl">
+## consumer , suplier در java ؟
 
 در جاوا، `Consumer` و `Supplier` دو نوع از توابعی هستند که در کتابخانه `java.util.function` معرفی شده‌اند. این توابع به عنوان بخشی از API توابعی جاوا (Java Functional API) ارائه شده‌اند و برای کار با برنامه‌نویسی تابعی (functional programming) مورد استفاده قرار می‌گیرند.
 
@@ -281,7 +241,6 @@ public class StreamFilterExample {
 
 **ساختار:**
 
-</div>
 
 ```java
 @FunctionalInterface
@@ -290,12 +249,8 @@ public interface Consumer<T> {
 }
 ```
 
-<div dir="rtl">
-
 **مثال:**
 در این مثال، یک `Consumer` تعریف شده است که یک رشته را چاپ می‌کند:
-
-</div>
 
 ```java
 import java.util.function.Consumer;
@@ -308,16 +263,12 @@ public class ConsumerExample {
 }
 ```
 
-<div dir="rtl">
-
 ### 2. `Supplier` در جاوا
 
 **تعریف:**
 - `Supplier` یک رابط تابعی (Functional Interface) است که هیچ ورودی‌ای نمی‌پذیرد و یک خروجی تولید می‌کند. این رابط معمولاً برای تولید یا تأمین مقادیر استفاده می‌شود، مانند ایجاد یک شیء جدید، تولید مقادیر تصادفی، یا خواندن داده‌ها از یک منبع خارجی.
 
 **ساختار:**
-
-</div>
 
 ```java
 @FunctionalInterface
@@ -326,12 +277,8 @@ public interface Supplier<T> {
 }
 ```
 
-<div dir="rtl">
-
 **مثال:**
 در این مثال، یک `Supplier` تعریف شده است که یک عدد تصادفی را تولید می‌کند:
-
-</div>
 
 ```java
 import java.util.function.Supplier;
@@ -345,14 +292,11 @@ public class SupplierExample {
 }
 ```
 
-<div dir="rtl">
-
 ### استفاده‌های کاربردی از `Consumer` و `Supplier`
 
 **مثال کاربردی با `Consumer`:**
 در این مثال، از `Consumer` برای چاپ تمام عناصر یک لیست استفاده می‌کنیم:
 
-</div>
 
 ```java
 import java.util.Arrays;
@@ -368,13 +312,8 @@ public class ListConsumerExample {
     }
 }
 ```
-
-<div dir="rtl">
-
 **مثال کاربردی با `Supplier`:**
 در این مثال، از `Supplier` برای تأمین مقادیر پیش‌فرض در یک برنامه استفاده می‌کنیم:
-
-</div>
 
 ```java
 import java.util.function.Supplier;
@@ -393,24 +332,16 @@ public class DefaultSupplierExample {
 }
 ```
 
-<div dir="rtl">
-
 ### نتیجه‌گیری
 
 - **Consumer:** برای انجام عملیات بر روی ورودی استفاده می‌شود و هیچ خروجی‌ای ندارد. مثال: چاپ کردن، ثبت لاگ.
 - **Supplier:** برای تولید یا تأمین مقادیر استفاده می‌شود و هیچ ورودی‌ای ندارد. مثال: تولید مقادیر تصادفی، تأمین مقادیر پیش‌فرض.
 
 هر دو `Consumer` و `Supplier` از ابزارهای قدرتمند برنامه‌نویسی تابعی در جاوا هستند که می‌توانند به بهبود خوانایی و نگهداری کد کمک کنند. با استفاده از این رابط‌های تابعی، می‌توانید کدهای انعطاف‌پذیرتر و قابل استفاده مجدد بنویسید.
-</div>
 
-</details>
 
-<details>
-<summary dir="rtl"> 
-25) تفاوت comprable  و comprator ؟
-</summary>
 
-<div dir="rtl">
+## تفاوت comprable  و comprator ؟
 
 در جاوا، `Comparable` و `Comparator` دو رابط (interface) هستند که برای مرتب‌سازی اشیاء استفاده می‌شوند. این دو رابط روش‌های متفاوتی برای تعریف ترتیب اشیاء ارائه می‌دهند و هر یک دارای کاربردها و مزایای خاص خود هستند.
 
@@ -421,21 +352,16 @@ public class DefaultSupplierExample {
 
 **ساختار:**
 
-</div>
-
 ```java
 public interface Comparable<T> {
     int compareTo(T o);
 }
 ```
-<div dir="rtl">
 
 **نحوه استفاده:**
 - یک کلاس باید `Comparable` را پیاده‌سازی کند و متد `compareTo` را تعریف کند تا ترتیب طبیعی برای اشیاء آن کلاس مشخص شود.
 
 **مثال:**
-
-</div>
 
 ```java
 public class Student implements Comparable<Student> {
@@ -479,19 +405,14 @@ public class Student implements Comparable<Student> {
     }
 }
 ```
-<div dir="rtl">
-
 
 **خروجی:**
-
-</div>
 
 ```
 Jack (70)
 John (85)
 Jane (92)
 ```
-<div dir="rtl">
 
 ### `Comparator`
 
@@ -500,7 +421,6 @@ Jane (92)
 
 **ساختار:**
 
-</div>
 
 ```java
 public interface Comparator<T> {
@@ -509,14 +429,12 @@ public interface Comparator<T> {
     boolean equals(Object obj);
 }
 ```
-<div dir="rtl">
 
 **نحوه استفاده:**
 - `Comparator` برای ایجاد یک کلاس جداگانه یا یک شیء مستقل استفاده می‌شود که متد `compare` را پیاده‌سازی می‌کند تا ترتیب سفارشی بین اشیاء را مشخص کند.
 
 **مثال:**
 
-</div>
 
 ```java
 import java.util.*;
@@ -563,36 +481,27 @@ public class Student {
     }
 }
 ```
-<div dir="rtl">
 
 **خروجی:**
 
-</div>
 
 ```
 Jack (70)
 Jane (92)
 John (85)
 ```
-<div dir="rtl">
 
 ### تفاوت‌های کلیدی بین `Comparable` و `Comparator`
-</div>
 
-<div>
 1-Sometimes we can’t modify the source code of the class whose objects we want to sort, thus making the use of Comparable impossible
 <br/>
 2-Using Comparators allows us to avoid adding additional code to our domain classes
 <br/>
 3-We can define multiple different comparison strategies, which isn’t possible when using Comparable
-</div>
 
-<div dir="rtl">
 1-گاهی اوقات نمی‌توانیم کد منبع کلاسی را که می‌خواهیم اشیاء آن را مرتب کنیم، تغییر دهیم، بنابراین استفاده از Comparable غیرممکن می‌شود.
 <br/>
 2-استفاده از Comparators به ما این امکان را می‌دهد که از اضافه کردن کد اضافی به کلاس‌های دامنه‌مان جلوگیری کنیم.
 <br/>
 3-می‌توانیم چندین استراتژی مقایسه متفاوت تعریف کنیم که این کار هنگام استفاده از Comparable ممکن نیست.
-</div>
 
-</details>
