@@ -1808,7 +1808,7 @@ public class ListenerLeakExample extends JFrame {
 
 
 
-## has-a و is-a relation  در جاوا چیه ؟
+## has-a relation و is-a relation  در جاوا چیه ؟
 
 در طراحی شیءگرا (Object-Oriented Design)، ارتباطات بین کلاس‌ها معمولاً به دو نوع تقسیم می‌شوند: **"is-a"** و **"has-a"**.
 

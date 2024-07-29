@@ -302,3 +302,145 @@ public class Main {
 ### کاربردها
 
 این تکنیک معمولاً برای جلوگیری از تغییر داده‌ها توسط کدهای ناخواسته یا اشتباه استفاده می‌شود. این کار امنیت بیشتری به برنامه‌ها می‌بخشد و از بروز خطاهای مرتبط با تغییر داده‌های مشترک جلوگیری می‌کند.
+
+
+
+## تفاوت list و set
+
+در جاوا، `List` و `Set` دو نوع مجموعه (collection) هستند که برای ذخیره‌سازی و مدیریت داده‌ها استفاده می‌شوند، اما تفاوت‌های کلیدی در نحوه عملکرد و ویژگی‌های آن‌ها وجود دارد. در ادامه، تفاوت‌های اصلی بین `List` و `Set` را بررسی می‌کنیم:
+
+### `List`
+- **تعریف**: `List` یک مجموعه مرتب از عناصر است که می‌تواند شامل عناصر تکراری باشد.
+- **پیاده‌سازی‌های اصلی**: `ArrayList`, `LinkedList`, `Vector`
+- **ویژگی‌ها**:
+    - **ترتیب**: `List` ترتیب عناصر را حفظ می‌کند. عناصر به ترتیب افزوده شده نمایش داده می‌شوند.
+    - **دسترسی به عناصر**: می‌توان به عناصر `List` با استفاده از اندیس (index) دسترسی داشت. این امر باعث می‌شود که بتوان عناصر را به راحتی اضافه، حذف و یا تغییر داد.
+    - **تکرار**: `List` می‌تواند شامل عناصر تکراری باشد، به این معنی که یک مقدار می‌تواند بیش از یک بار در `List` ظاهر شود.
+
+**مثال**:
+```java
+import java.util.ArrayList;
+import java.util.List;
+
+public class ListExample {
+    public static void main(String[] args) {
+        List<String> list = new ArrayList<>();
+        list.add("Apple");
+        list.add("Banana");
+        list.add("Apple"); // عنصر تکراری
+        System.out.println(list); // [Apple, Banana, Apple]
+        
+        // دسترسی به عنصر با استفاده از اندیس
+        System.out.println(list.get(1)); // Banana
+    }
+}
+```
+
+### `Set`
+- **تعریف**: `Set` یک مجموعه غیرمرتب از عناصر است که هیچ عنصر تکراری ندارد.
+- **پیاده‌سازی‌های اصلی**: `HashSet`, `LinkedHashSet`, `TreeSet`
+- **ویژگی‌ها**:
+    - **ترتیب**: `Set` ترتیب خاصی برای عناصر خود ندارد، مگر اینکه از پیاده‌سازی خاصی مانند `LinkedHashSet` (ترتیب افزوده شده) یا `TreeSet` (ترتیب طبیعی یا مشخص شده) استفاده شود.
+    - **دسترسی به عناصر**: `Set` از اندیس برای دسترسی به عناصر پشتیبانی نمی‌کند، بنابراین باید از طریق پیمایش (iteration) به عناصر دسترسی پیدا کرد.
+    - **تکرار**: `Set` نمی‌تواند شامل عناصر تکراری باشد. اگر سعی کنید یک عنصر تکراری به `Set` اضافه کنید، اضافه نخواهد شد.
+
+**مثال**:
+```java
+import java.util.HashSet;
+import java.util.Set;
+
+public class SetExample {
+    public static void main(String[] args) {
+        Set<String> set = new HashSet<>();
+        set.add("Apple");
+        set.add("Banana");
+        set.add("Apple"); // عنصر تکراری اضافه نمی‌شود
+        System.out.println(set); // [Apple, Banana]
+    }
+}
+```
+
+### خلاصه تفاوت‌ها
+| ویژگی            | `List`                      | `Set`                     |
+|------------------|-----------------------------|---------------------------|
+| ترتیب عناصر      | ترتیب عناصر را حفظ می‌کند  | ترتیب خاصی ندارد (مگر در پیاده‌سازی‌های خاص) |
+| تکرار عناصر      | می‌تواند شامل عناصر تکراری باشد | نمی‌تواند شامل عناصر تکراری باشد |
+| دسترسی به عناصر  | با استفاده از اندیس        | دسترسی با اندیس پشتیبانی نمی‌شود |
+| پیاده‌سازی‌های اصلی | `ArrayList`, `LinkedList`, `Vector` | `HashSet`, `LinkedHashSet`, `TreeSet` |
+
+### کاربردها
+- **`List`**: زمانی استفاده می‌شود که ترتیب عناصر و دسترسی به آن‌ها با اندیس اهمیت دارد. به عنوان مثال، برای ذخیره‌سازی لیستی از آیتم‌ها که ممکن است تکراری باشند و ترتیب آن‌ها مهم است.
+- **`Set`**: زمانی استفاده می‌شود که یکتا بودن عناصر مهم است و نمی‌خواهیم عناصر تکراری در مجموعه داشته باشیم. به عنوان مثال، برای ذخیره‌سازی مجموعه‌ای از آیتم‌های منحصر به فرد مانند شناسه‌های کاربری.
+
+امکان ذخیره‌سازی مقدار `null` در `List` و `Set` وجود دارد، اما برخی تفاوت‌ها و محدودیت‌ها در این خصوص وجود دارد. در ادامه، نحوه برخورد `List` و `Set` با مقدار `null` را بررسی می‌کنیم.
+
+### `List`:
+در `List`، می‌توانید مقدار `null` را ذخیره کنید و هیچ محدودیتی برای تعداد مقادیر `null` وجود ندارد.
+
+**مثال:**
+```java
+import java.util.ArrayList;
+import java.util.List;
+
+public class ListNullExample {
+    public static void main(String[] args) {
+        List<String> list = new ArrayList<>();
+        list.add("Apple");
+        list.add(null); // اضافه کردن مقدار null
+        list.add("Banana");
+        list.add(null); // اضافه کردن مقدار null تکراری
+
+        System.out.println(list); // [Apple, null, Banana, null]
+    }
+}
+```
+
+### `Set`:
+در `Set`، می‌توانید یک مقدار `null` را ذخیره کنید، اما فقط یک مقدار `null` مجاز است. این به این دلیل است که `Set` از عناصر تکراری پشتیبانی نمی‌کند.
+
+**مثال:**
+```java
+import java.util.HashSet;
+import java.util.Set;
+
+public class SetNullExample {
+    public static void main(String[] args) {
+        Set<String> set = new HashSet<>();
+        set.add("Apple");
+        set.add(null); // اضافه کردن مقدار null
+        set.add("Banana");
+        set.add(null); // تلاش برای اضافه کردن مقدار null تکراری
+
+        System.out.println(set); // [null, Apple, Banana]
+    }
+}
+```
+
+### محدودیت‌ها و رفتارهای خاص
+- **`HashSet` و `LinkedHashSet`**: این پیاده‌سازی‌های `Set` اجازه می‌دهند که یک مقدار `null` ذخیره شود.
+- **`TreeSet`**: این پیاده‌سازی از `Set` اجازه ذخیره‌سازی مقدار `null` را نمی‌دهد زیرا برای مرتب‌سازی عناصر به مقایسه آن‌ها نیاز دارد و مقایسه `null` با سایر عناصر منجر به `NullPointerException` می‌شود.
+
+**مثال از `TreeSet`:**
+```java
+import java.util.Set;
+import java.util.TreeSet;
+
+public class TreeSetNullExample {
+    public static void main(String[] args) {
+        Set<String> set = new TreeSet<>();
+        set.add("Apple");
+        set.add(null); // این خطا ایجاد می‌کند: NullPointerException
+        set.add("Banana");
+
+        System.out.println(set);
+    }
+}
+```
+
+### خلاصه:
+- **`List`**: اجازه ذخیره‌سازی مقادیر متعدد `null` را می‌دهد.
+- **`HashSet` و `LinkedHashSet`**: اجازه ذخیره‌سازی یک مقدار `null` را می‌دهند.
+- **`TreeSet`**: اجازه ذخیره‌سازی مقدار `null` را نمی‌دهد.
+
+با در نظر گرفتن این محدودیت‌ها، می‌توانید تصمیم بگیرید که کدام ساختار داده برای نیازهای خاص شما مناسب‌تر است.
+
