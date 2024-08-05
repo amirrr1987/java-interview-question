@@ -1,3 +1,4 @@
+// @ts-ignore
 import { defineConfig } from "vitepress";
 
 // https://vitepress.dev/reference/site-config
@@ -28,6 +29,12 @@ export default defineConfig({
           { text: "String", link: "/java-se/string" },
           { text: "Collection", link: "/java-se/collection" },
           { text: "Stream", link: "/java-se/stream" },
+        ],
+      },
+      {
+        text: "SOLID",
+        items: [
+          { text: "solid اصول", link: "/solid/solid" },
         ],
       },
       {
