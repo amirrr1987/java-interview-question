@@ -3,11 +3,14 @@ import { defineConfig } from "vitepress";
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
+  head: [],
   title: "Java interview question",
   description: "smaple java questions",
   lang: "fa",
   // dir: "rtl",
   // lastUpdated: true,
+  // assetsDir: "images",
+
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
@@ -21,6 +24,7 @@ export default defineConfig({
       src: "https://cdn.iconscout.com/icon/free/png-256/free-java-60-1174953.png?f=webp&w=256",
       alt: "java logo",
     },
+    // siteTitle: "My Custom Title",
     sidebar: [
       {
         text: "Java SE",
@@ -33,9 +37,7 @@ export default defineConfig({
       },
       {
         text: "SOLID",
-        items: [
-          { text: "solid اصول", link: "/solid/solid" },
-        ],
+        items: [{ text: "solid اصول", link: "/solid/solid" }],
       },
       {
         text: "Hibernate",

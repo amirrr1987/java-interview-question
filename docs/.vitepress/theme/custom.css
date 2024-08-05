@@ -8,3 +8,14 @@
   direction: rtl;
   font-family: "Vazirmatn", sans-serif;
 }
+.image-bg[data-v-26fbfc35] {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 50%;
+  width: 192px;
+  height: 192px;
+  background-image: var(--vp-home-hero-image-background-image);
+  filter: blur(72px);
+  transform: translate(-50%, -50%);
+}
